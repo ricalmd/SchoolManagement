@@ -36,12 +36,9 @@ namespace SchoolManagement.Migrations
                         .IsRequired()
                         .HasMaxLength(250);
 
-                    b.Property<DateTime>("Duration");
+                    b.Property<int>("Duration");
 
                     b.Property<string>("Field")
-                        .IsRequired();
-
-                    b.Property<string>("Level")
                         .IsRequired();
 
                     b.Property<string>("Name")

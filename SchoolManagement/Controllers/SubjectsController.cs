@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Data;
@@ -7,6 +9,7 @@ using SchoolManagement.Helpers;
 
 namespace SchoolManagement.Controllers
 {
+    [Authorize]
     public class SubjectsController : Controller
     {
         private readonly ISubjectRepository _subjectRepository;
@@ -21,7 +24,7 @@ namespace SchoolManagement.Controllers
         // GET: Subjects
         public IActionResult Index()
         {
-            return View(_subjectRepository.GetAll());
+            return View(_subjectRepository.GetAll().OrderBy(s => s.Name));
         }
 
         // GET: Subjects/Details/5
@@ -56,7 +59,7 @@ namespace SchoolManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                subject.User = await _userHelper.GetUserByEmailAsync("");
+                subject.User = await _userHelper.GetUserByEmailAsync("ricardo.formando.cinel@gmail.com");
                 await _subjectRepository.CreateAsync(subject);
                 return RedirectToAction(nameof(Index));
             }
@@ -90,7 +93,7 @@ namespace SchoolManagement.Controllers
             {
                 try
                 {
-                    subject.User = await _userHelper.GetUserByEmailAsync("");
+                    subject.User = await _userHelper.GetUserByEmailAsync("ricardo.formando.cinel@gmail.com");
                     await _subjectRepository.UpdateAsync(subject);
                 }
                 catch (DbUpdateConcurrencyException)

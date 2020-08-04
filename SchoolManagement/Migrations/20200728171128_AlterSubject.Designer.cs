@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagement.Data;
 
 namespace SchoolManagement.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200728171128_AlterSubject")]
+    partial class AlterSubject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,6 +145,9 @@ namespace SchoolManagement.Migrations
 
                     b.Property<double>("Credit");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -163,6 +168,8 @@ namespace SchoolManagement.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Subjects");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Subject");
                 });
 
             modelBuilder.Entity("SchoolManagement.Data.Entities.User", b =>
@@ -228,6 +235,16 @@ namespace SchoolManagement.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("SchoolManagement.Models.SubjectViewModel", b =>
+                {
+                    b.HasBaseType("SchoolManagement.Data.Entities.Subject");
+
+
+                    b.ToTable("SubjectViewModel");
+
+                    b.HasDiscriminator().HasValue("SubjectViewModel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

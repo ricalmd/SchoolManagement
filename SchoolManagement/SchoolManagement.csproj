@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>SchoolManagement</AssemblyName>
+    <RootNamespace>SchoolManagement</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,10 +14,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\API\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagement.Data.Entities
 {
@@ -12,34 +11,29 @@ namespace SchoolManagement.Data.Entities
         [MaxLength(50, ErrorMessage = "O campo {0} só pode conter até {1} caracteres.")]
         public string Name { get; set; }
 
-        [Display(Name = "Duração")]
-        [DisplayFormat(DataFormatString ="{0:HH}", ApplyFormatInEditMode = false)]
-        public DateTime Duration { get; set; }
+        [Display(Name = "Carga horária")]
+        public int Workload { get; set; }
 
         [Display(Name = "Código")]
         [Required]
         public string Code { get; set; }
 
-        [Display(Name = "Área")]
-        [Required]
-        public string Field { get; set; }
-
-        [Display(Name = "Qualificação")]
-        [Required]
-        public string Qualification { get; set; }
-
         [Display(Name = "Créditos")]
         [Required]
-        public int Credit { get; set; }
+        public double Credit { get; set; }
 
-        [Display(Name = "Descrição")]
+        [Display(Name = "Objetivos")]
         [Required]
         [MaxLength(250, ErrorMessage = "O campo {0} só pode conter até {1} caracteres.")]
-        public string Description { get; set; }
+        public string Objectiv { get; set; }
 
-        [Display(Name = "Nível")]
+        [Display(Name = "Conteúdos")]
         [Required]
-        public string Level { get; set; }
+        public string Content { get; set; }
+
+        [Display(Name = "Referências")]
+        [Required]
+        public string Reference { get; set; }
 
         public User User { get; set; }
     }

@@ -15,13 +15,12 @@ namespace SchoolManagement.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    Duration = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<int>(nullable: false),
                     Code = table.Column<string>(nullable: false),
                     Field = table.Column<string>(nullable: false),
                     Qualification = table.Column<string>(nullable: false),
                     Credit = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(maxLength: 250, nullable: false),
-                    Level = table.Column<string>(nullable: false)
+                    Description = table.Column<string>(maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
