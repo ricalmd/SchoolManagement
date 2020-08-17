@@ -59,9 +59,10 @@ namespace SchoolManagement.Web
 
             services.AddTransient<SeedDb>();
             services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<ICourseAndSubjectsHelper, CourseAndSubjectsHelper>();
+            services.AddScoped<ICourseWithSubjectsRepository, CourseWithSubjectsRepository>();
             services.AddScoped<ISubjectRepository, SubjectRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
-            services.AddScoped<ICourseWithSubjectsRepository, CourseWithSubjectsRepository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

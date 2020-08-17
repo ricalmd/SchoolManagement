@@ -1,13 +1,13 @@
-﻿@model SchoolManagement.Web.Data.Entities.Course
+﻿@model SchoolManagement.Web.Models.CourseSubjectViewModel
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>Detalhes</h2>
 
 <div>
-    <h4>Course</h4>
+    <h4>Curso</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -42,7 +42,55 @@
         </dd>
     </dl>
 </div>
+<h4>Disciplinas</h4>
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <h5>Designação</h5>
+            </td>
+            <td>
+                <h5>Objetivos</h5>
+            </td>
+            <td>
+                <h5>Carga Horária</h5>
+            </td>
+            <td>
+                <h5>Créditos</h5>
+            </td>
+            <td>
+                <h5>Conteúdos</h5>
+            </td>
+            <td>
+                <h5>Código</h5>
+            </td>
+        </tr>
+        @foreach (var item in Model.Subjects)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Objectiv)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Workload)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Credit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-    <a asp-action="Index" class="btn btn-success">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-success">Regressar</a>
 </div>

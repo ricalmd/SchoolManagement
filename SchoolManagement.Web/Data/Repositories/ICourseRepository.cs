@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SchoolManagement.Web.Data.Entities;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Data.Repositories
 {
@@ -7,6 +10,8 @@ namespace SchoolManagement.Web.Data.Repositories
     {
         IQueryable GetAllWithUsers();
 
-        IQueryable TestRepos();
+        IEnumerable<SelectListItem> GetComboSubjects();
+
+        AddSubjectsViewModel ToAddSubjectsViewModel(Course course);
     }
 }

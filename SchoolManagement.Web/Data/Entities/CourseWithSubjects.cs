@@ -7,9 +7,9 @@ namespace SchoolManagement.Web.Data.Entities
         public int Id { get; set; }
 
         [Required]
-        public Subject Subject { get; set; }
+        public int SubjectId { get; set; }
 
         [Required]
-        public Course Course { get; set; }
+        public int CourseId { get; set; }
     }
 }

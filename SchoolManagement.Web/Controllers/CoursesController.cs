@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
@@ -14,13 +15,22 @@ namespace SchoolManagement.Web.Controllers
     {
         private readonly ICourseRepository _courseRepository;
         private readonly ICourseWithSubjectsRepository _courseWithSubjectsRepository;
+        private readonly ISubjectRepository _subjectRepository;
         private readonly IUserHelper _userHelper;
+        private readonly ICourseAndSubjectsHelper _courseAndSubjectsHelper;
 
-        public CoursesController(ICourseRepository courseRepository, ICourseWithSubjectsRepository courseWithSubjectsRepository, IUserHelper userHelper)
+        public CoursesController(
+            ICourseRepository courseRepository,
+            ICourseWithSubjectsRepository courseWithSubjectsRepository,
+            ISubjectRepository subjectRepository,
+            IUserHelper userHelper,
+            ICourseAndSubjectsHelper courseAndSubjectsHelper)
         {
             _courseRepository = courseRepository;
             _courseWithSubjectsRepository = courseWithSubjectsRepository;
+            _subjectRepository = subjectRepository;
             _userHelper = userHelper;
+            _courseAndSubjectsHelper = courseAndSubjectsHelper;
         }
 
         // GET: Courses
@@ -30,26 +40,27 @@ namespace SchoolManagement.Web.Controllers
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, Subject subject)
         {
-            if (id == null)
+            if(id == null)
             {
                 return NotFound();
             }
 
             var course = await _courseRepository.GetByIdAsync(id.Value);
+            var list = _courseWithSubjectsRepository.GetCourseWithSubjects(id.Value);
+            
+            subject.SubjectsAndCourses = list.ToList();
+
+            var cws = _subjectRepository.GetSubjectsWithCourse(list);
+
             if (course == null)
             {
                 return NotFound();
             }
 
-            return View(course);
-        }
-
-        public IActionResult Testing()
-        {
-            var model = _courseRepository.TestRepos();
-
+            var model = _courseAndSubjectsHelper.ToCourseSubjectViewModel(course, cws);
+            
             return View(model);
         }
 
@@ -84,12 +95,14 @@ namespace SchoolManagement.Web.Controllers
             }
 
             var course = await _courseRepository.GetByIdAsync(id.Value);
+            var model = _courseRepository.ToAddSubjectsViewModel(course);
+
             if (course == null)
             {
                 return NotFound();
             }
-            
-            return View(course);
+
+            return View(model);
         }
 
         // POST: Courses/Edit/5
@@ -97,7 +110,7 @@ namespace SchoolManagement.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Course course)
+        public async Task<IActionResult> Edit(Course course, AddSubjectsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -105,6 +118,9 @@ namespace SchoolManagement.Web.Controllers
                 {
                     course.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _courseRepository.UpdateAsync(course);
+                    
+                    var cws = _courseWithSubjectsRepository.ToAddCourseWithSubjects(course.Id, model);
+                    await _courseWithSubjectsRepository.CreateAsync(cws);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,6 +135,7 @@ namespace SchoolManagement.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(course);
         }
 

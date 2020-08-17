@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Data.Repositories
 {
@@ -18,9 +21,37 @@ namespace SchoolManagement.Web.Data.Repositories
             return _context.Courses.Include(c => c.User);
         }
 
-        public IQueryable TestRepos()
+        public IEnumerable<SelectListItem> GetComboSubjects()
         {
-            return _context.Courses.Where(c => c.Id == 4);
+            var list = _context.Subjects.Select(s => new SelectListItem 
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }).ToList();
+
+            list.Insert(0, new SelectListItem 
+            {
+                Text = "(Selecionar disciplina)",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+        public AddSubjectsViewModel ToAddSubjectsViewModel(Course course)
+        {
+            return new AddSubjectsViewModel
+            {
+                Subject = GetComboSubjects(),
+                Id = course.Id,
+                Name = course.Name,
+                Profile = course.Profile,
+                QEQ = course.QEQ,
+                QNQ = course.QNQ,
+                Reference = course.Reference,
+                User = course.User
+            };
         }
     }
 }
+

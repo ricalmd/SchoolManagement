@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using SchoolManagement.Migrations;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Helpers;
 
@@ -94,8 +91,6 @@ namespace SchoolManagement.Web.Data
                 Reference = "1234",
                 User = user
              });
-
-            CreateCourse(name, user);
         }
 
         private void AddSubject(string name, User user)
@@ -110,47 +105,14 @@ namespace SchoolManagement.Web.Data
                 Content = "Testar",
                 User = user
             });
-
-            CreateSubject(name, user);
-        }
-
-        private Course CreateCourse(string name, User user)
-        {
-            var course = new Course
-            {
-                Name = name,
-                QNQ = "4",
-                QEQ = "4",
-                Profile = "Ter estofo para usar picareta!",
-                Reference = "12345",
-                User = user
-            };
-
-            return course;
-        }
-
-        private Subject CreateSubject(string name, User user)
-        {
-            var subject = new Subject 
-            {
-                Name = name,
-                Workload = 22,
-                Code = "891",
-                Credit = 25,
-                Objectiv = "Testar isto",
-                Content = "Testar",
-                User = user
-            };
-
-            return subject;
         }
 
         private void AddCourseWithSubjects(User user)
         {
             _context.CoursesWithSubjects.Add(new CourseWithSubjects 
             {
-                Subject = CreateSubject("Matemática", user),
-                Course = CreateCourse("Arqueologia", user)
+                SubjectId = 1,
+                CourseId = 2
             });
         }
     }

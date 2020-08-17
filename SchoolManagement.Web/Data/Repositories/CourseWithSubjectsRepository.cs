@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Data.Repositories
 {
@@ -13,9 +15,18 @@ namespace SchoolManagement.Web.Data.Repositories
             _context = context;
         }
 
-        public IQueryable GetAllWithCoursesNSubjects()
+        public IQueryable<CourseWithSubjects> GetCourseWithSubjects(int idCourse)
         {
-            return _context.CoursesWithSubjects.Include(c => c.Course).Include(c => c.Subject);
+            return _context.CoursesWithSubjects.Where(c => c.CourseId == idCourse);
+        }
+
+        public CourseWithSubjects ToAddCourseWithSubjects(int id, AddSubjectsViewModel model)
+        {
+            return new CourseWithSubjects
+            {
+                CourseId = id,
+                SubjectId = model.SubjectId
+            };
         }
     }
 }
