@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Operations;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagement.Web.Data.Entities
 {
@@ -26,8 +24,6 @@ namespace SchoolManagement.Web.Data.Entities
         [Display(Name = "Perfil Profissional")]
         [Required]
         public string Profile { get; set; }
-
-        public ICollection<CourseWithSubjects> CoursesAndSubjects { get; set; }
 
         public User User { get; set; }
     }

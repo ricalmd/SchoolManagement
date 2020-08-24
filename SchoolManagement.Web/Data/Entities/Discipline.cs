@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagement.Web.Data.Entities
 {
-    public class Subject : IEntity
+    public class Discipline : IEntity
     {
         public int Id { get; set; }
 
@@ -31,8 +30,6 @@ namespace SchoolManagement.Web.Data.Entities
         [Display(Name = "Conteúdos")]
         [Required]
         public string Content { get; set; }
-
-        public ICollection<CourseWithSubjects> SubjectsAndCourses { get; set; }
 
         public User User { get; set; }
     }

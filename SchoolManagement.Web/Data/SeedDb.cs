@@ -57,11 +57,11 @@ namespace SchoolManagement.Web.Data
                 }
             }
 
-            if (!_context.Subjects.Any())
+            if (!_context.Disciplines.Any())
             {
-                AddSubject("Matemática", user);
-                AddSubject("Português", user);
-                AddSubject("História", user);
+                AddDiscipline("Matemática", user);
+                AddDiscipline("Português", user);
+                AddDiscipline("História", user);
 
                 await _context.SaveChangesAsync();
             }
@@ -73,9 +73,9 @@ namespace SchoolManagement.Web.Data
                 await _context.SaveChangesAsync();
             }
 
-            if (!_context.CoursesWithSubjects.Any())
+            if (!_context.CourseWithDisciplines.Any())
             {
-                AddCourseWithSubjects(user);
+                AddCourseWithDisciplines();
                 await _context.SaveChangesAsync();
             }
         }
@@ -93,9 +93,9 @@ namespace SchoolManagement.Web.Data
              });
         }
 
-        private void AddSubject(string name, User user)
+        private void AddDiscipline(string name, User user)
         {
-            _context.Subjects.Add(new Subject
+            _context.Disciplines.Add(new Discipline
             {
                 Name = name,
                 Workload = _random.Next(51),
@@ -107,12 +107,12 @@ namespace SchoolManagement.Web.Data
             });
         }
 
-        private void AddCourseWithSubjects(User user)
+        private void AddCourseWithDisciplines()
         {
-            _context.CoursesWithSubjects.Add(new CourseWithSubjects 
+            _context.CourseWithDisciplines.Add(new CourseWithDiscipline 
             {
-                SubjectId = 1,
-                CourseId = 2
+                DisciplineId = 1,
+                CourseId = 1
             });
         }
     }

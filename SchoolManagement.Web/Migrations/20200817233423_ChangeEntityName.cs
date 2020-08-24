@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SchoolManagement.Web.Migrations
 {
-    public partial class InitDB : Migration
+    public partial class ChangeEntityName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -185,7 +185,7 @@ namespace SchoolManagement.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subjects",
+                name: "Disciplines",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -196,24 +196,43 @@ namespace SchoolManagement.Web.Migrations
                     Credit = table.Column<double>(nullable: false),
                     Objectiv = table.Column<string>(nullable: false),
                     Content = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: true),
-                    CourseId = table.Column<int>(nullable: true)
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subjects", x => x.Id);
+                    table.PrimaryKey("PK_Disciplines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Subjects_Courses_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Subjects_AspNetUsers_UserId",
+                        name: "FK_Disciplines_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CourseWithDisciplines",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DisciplineId = table.Column<int>(nullable: false),
+                    CourseId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseWithDisciplines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseWithDisciplines_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseWithDisciplines_Disciplines_DisciplineId",
+                        column: x => x.DisciplineId,
+                        principalTable: "Disciplines",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -261,13 +280,18 @@ namespace SchoolManagement.Web.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subjects_CourseId",
-                table: "Subjects",
+                name: "IX_CourseWithDisciplines_CourseId",
+                table: "CourseWithDisciplines",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subjects_UserId",
-                table: "Subjects",
+                name: "IX_CourseWithDisciplines_DisciplineId",
+                table: "CourseWithDisciplines",
+                column: "DisciplineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Disciplines_UserId",
+                table: "Disciplines",
                 column: "UserId");
         }
 
@@ -289,13 +313,16 @@ namespace SchoolManagement.Web.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Subjects");
+                name: "CourseWithDisciplines");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Courses");
+
+            migrationBuilder.DropTable(
+                name: "Disciplines");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

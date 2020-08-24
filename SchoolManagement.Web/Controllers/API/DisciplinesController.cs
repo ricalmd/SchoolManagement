@@ -8,19 +8,19 @@ namespace SchoolManagement.Web.Controllers.API
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class SubjectsController : Controller
+    public class DisciplinesController : Controller
     {
-        private readonly ISubjectRepository _subjectRepository;
+        private readonly IDisciplineRepository _disciplineRepository;
 
-        public SubjectsController(ISubjectRepository subjectRepository)
+        public DisciplinesController(IDisciplineRepository disciplineRepository)
         {
-            _subjectRepository = subjectRepository;
+            _disciplineRepository = disciplineRepository;
         }
 
         [HttpGet]
-        public IActionResult GetSubjects()
+        public IActionResult GetDisciplines()
         {
-            return Ok(_subjectRepository.GetAllWithUsers());
+            return Ok(_disciplineRepository.GetAllWithUsers());
         }
     }
 }

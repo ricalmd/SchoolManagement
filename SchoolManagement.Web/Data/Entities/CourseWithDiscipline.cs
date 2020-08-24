@@ -2,12 +2,12 @@
 
 namespace SchoolManagement.Web.Data.Entities
 {
-    public class CourseWithSubjects : IEntity
+    public class CourseWithDiscipline : IEntity
     {
         public int Id { get; set; }
 
         [Required]
-        public int SubjectId { get; set; }
+        public int DisciplineId { get; set; }
 
         [Required]
         public int CourseId { get; set; }

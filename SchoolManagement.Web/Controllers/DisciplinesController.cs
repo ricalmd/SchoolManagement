@@ -10,21 +10,21 @@ using SchoolManagement.Web.Helpers;
 namespace SchoolManagement.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class SubjectsController : Controller
+    public class DisciplinesController : Controller
     {
-        private readonly ISubjectRepository _subjectRepository;
+        private readonly IDisciplineRepository _disciplineRepository;
         private readonly IUserHelper _userHelper;
 
-        public SubjectsController(ISubjectRepository subjectRepository, IUserHelper userHelper)
+        public DisciplinesController(IDisciplineRepository disciplineRepository, IUserHelper userHelper)
         {
-            _subjectRepository = subjectRepository;
+            _disciplineRepository = disciplineRepository;
             _userHelper = userHelper;
         }
 
         // GET: Subjects
         public IActionResult Index()
         {
-            return View(_subjectRepository.GetAll().OrderBy(s => s.Name));
+            return View(_disciplineRepository.GetAll().OrderBy(s => s.Name));
         }
 
         // GET: Subjects/Details/5
@@ -35,13 +35,13 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
-            var subject = await _subjectRepository.GetByIdAsync(id.Value);
-            if (subject == null)
+            var discipline = await _disciplineRepository.GetByIdAsync(id.Value);
+            if (discipline == null)
             {
                 return NotFound();
             }
 
-            return View(subject);
+            return View(discipline);
         }
 
         // GET: Subjects/Create
@@ -55,15 +55,15 @@ namespace SchoolManagement.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Subject subject)
+        public async Task<IActionResult> Create(Discipline discipline)
         {
             if (ModelState.IsValid)
             {
-                subject.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                await _subjectRepository.CreateAsync(subject);
+                discipline.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                await _disciplineRepository.CreateAsync(discipline);
                 return RedirectToAction(nameof(Index));
             }
-            return View(subject);
+            return View(discipline);
         }
 
         // GET: Subjects/Edit/5
@@ -74,12 +74,12 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
-            var subject = await _subjectRepository.GetByIdAsync(id.Value);
-            if (subject == null)
+            var discipline = await _disciplineRepository.GetByIdAsync(id.Value);
+            if (discipline == null)
             {
                 return NotFound();
             }
-            return View(subject);
+            return View(discipline);
         }
 
         // POST: Subjects/Edit/5
@@ -87,18 +87,18 @@ namespace SchoolManagement.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Subject subject)
+        public async Task<IActionResult> Edit(Discipline discipline)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    subject.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                    await _subjectRepository.UpdateAsync(subject);
+                    discipline.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await _disciplineRepository.UpdateAsync(discipline);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _subjectRepository.ExistAsync(subject.Id))
+                    if (!await _disciplineRepository.ExistAsync(discipline.Id))
                     {
                         return NotFound();
                     }
@@ -109,7 +109,7 @@ namespace SchoolManagement.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(subject);
+            return View(discipline);
         }
 
         // GET: Subjects/Delete/5
@@ -120,13 +120,13 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
-            var subject = await _subjectRepository.GetByIdAsync(id.Value);
-            if (subject == null)
+            var discipline = await _disciplineRepository.GetByIdAsync(id.Value);
+            if (discipline == null)
             {
                 return NotFound();
             }
 
-            return View(subject);
+            return View(discipline);
         }
 
         // POST: Subjects/Delete/5
@@ -134,8 +134,8 @@ namespace SchoolManagement.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var subject = await _subjectRepository.GetByIdAsync(id);
-            await _subjectRepository.DeleteAsync(subject);
+            var discipline = await _disciplineRepository.GetByIdAsync(id);
+            await _disciplineRepository.DeleteAsync(discipline);
             return RedirectToAction(nameof(Index));
         }
     }

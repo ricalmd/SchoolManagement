@@ -10,8 +10,8 @@ using SchoolManagement.Web.Data;
 namespace SchoolManagement.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200808182405_AddCourseWithSubjects")]
-    partial class AddCourseWithSubjects
+    [Migration("20200817233423_ChangeEntityName")]
+    partial class ChangeEntityName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -162,26 +162,26 @@ namespace SchoolManagement.Web.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.CourseWithSubjects", b =>
+            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.CourseWithDiscipline", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CourseId");
+                    b.Property<int>("CourseId");
 
-                    b.Property<int>("SubjectId");
+                    b.Property<int>("DisciplineId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("DisciplineId");
 
-                    b.ToTable("CoursesWithSubjects");
+                    b.ToTable("CourseWithDisciplines");
                 });
 
-            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Subject", b =>
+            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Discipline", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -210,7 +210,7 @@ namespace SchoolManagement.Web.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Disciplines");
                 });
 
             modelBuilder.Entity("SchoolManagement.Web.Data.Entities.User", b =>
@@ -330,19 +330,20 @@ namespace SchoolManagement.Web.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.CourseWithSubjects", b =>
+            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.CourseWithDiscipline", b =>
                 {
                     b.HasOne("SchoolManagement.Web.Data.Entities.Course")
-                        .WithMany("Items")
-                        .HasForeignKey("CourseId");
+                        .WithMany("CoursesAndSubjects")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SchoolManagement.Web.Data.Entities.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
+                    b.HasOne("SchoolManagement.Web.Data.Entities.Discipline")
+                        .WithMany("DisciplinesAndCourses")
+                        .HasForeignKey("DisciplineId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Subject", b =>
+            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Discipline", b =>
                 {
                     b.HasOne("SchoolManagement.Web.Data.Entities.User", "User")
                         .WithMany()

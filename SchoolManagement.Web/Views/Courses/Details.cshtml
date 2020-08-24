@@ -1,4 +1,4 @@
-﻿@model SchoolManagement.Web.Models.CourseSubjectViewModel
+﻿@model SchoolManagement.Web.Models.CourseAndDisciplinesViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -65,28 +65,31 @@
                 <h5>Código</h5>
             </td>
         </tr>
-        @foreach (var item in Model.Subjects)
+        @foreach (var item in Model.Disciplines)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Objectiv)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Workload)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Credit)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Code)
-                </td>
-            </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Objectiv)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Workload)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Credit)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Content)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
+        <td>
+            <a asp-action="DeleteCwd" asp-route-id="@Html.DisplayFor(modelItem => item.Id)" class="btn btn-danger">Delete</a>
+        </td>
+    </tr>
         }
     </tbody>
 </table>

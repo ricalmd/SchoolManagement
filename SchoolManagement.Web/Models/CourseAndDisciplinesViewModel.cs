@@ -3,8 +3,8 @@ using SchoolManagement.Web.Data.Entities;
 
 namespace SchoolManagement.Web.Models
 {
-    public class CourseSubjectViewModel : Course
+    public class CourseAndDisciplinesViewModel : Course
     {
-        public IEnumerable<Subject> Subjects { get; set; }
+        public ICollection<Discipline> Disciplines { get; set; }
     }
 }

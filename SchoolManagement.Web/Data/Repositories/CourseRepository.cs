@@ -23,7 +23,7 @@ namespace SchoolManagement.Web.Data.Repositories
 
         public IEnumerable<SelectListItem> GetComboSubjects()
         {
-            var list = _context.Subjects.Select(s => new SelectListItem 
+            var list = _context.Disciplines.Select(s => new SelectListItem 
             {
                 Text = s.Name,
                 Value = s.Id.ToString()
@@ -38,11 +38,11 @@ namespace SchoolManagement.Web.Data.Repositories
             return list;
         }
 
-        public AddSubjectsViewModel ToAddSubjectsViewModel(Course course)
+        public AddDisciplinesViewModel ToAddDisciplinesViewModel(Course course)
         {
-            return new AddSubjectsViewModel
+            return new AddDisciplinesViewModel
             {
-                Subject = GetComboSubjects(),
+                Discipline = GetComboSubjects(),
                 Id = course.Id,
                 Name = course.Name,
                 Profile = course.Profile,
@@ -50,6 +50,20 @@ namespace SchoolManagement.Web.Data.Repositories
                 QNQ = course.QNQ,
                 Reference = course.Reference,
                 User = course.User
+            };
+        }
+
+        public CourseAndDisciplinesViewModel CourseAndDisciplines(Course course, ICollection<Discipline> disciplines)
+        {
+            return new CourseAndDisciplinesViewModel
+            {
+                Id = course.Id,
+                Name = course.Name,
+                QNQ = course.QNQ,
+                QEQ = course.QEQ,
+                Profile = course.Profile,
+                Reference = course.Reference,
+                Disciplines = disciplines
             };
         }
     }

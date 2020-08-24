@@ -12,6 +12,8 @@ namespace SchoolManagement.Web.Data.Repositories
 
         IEnumerable<SelectListItem> GetComboSubjects();
 
-        AddSubjectsViewModel ToAddSubjectsViewModel(Course course);
+        AddDisciplinesViewModel ToAddDisciplinesViewModel(Course course);
+
+        CourseAndDisciplinesViewModel CourseAndDisciplines(Course course, ICollection<Discipline> disciplines);
     }
 }

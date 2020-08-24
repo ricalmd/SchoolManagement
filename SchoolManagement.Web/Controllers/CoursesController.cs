@@ -14,23 +14,23 @@ namespace SchoolManagement.Web.Controllers
     public class CoursesController : Controller
     {
         private readonly ICourseRepository _courseRepository;
-        private readonly ICourseWithSubjectsRepository _courseWithSubjectsRepository;
-        private readonly ISubjectRepository _subjectRepository;
+        private readonly ICourseWithDisciplineRepository _courseWithDisciplinesRepository;
+        private readonly IDisciplineRepository _disciplineRepository;
         private readonly IUserHelper _userHelper;
-        private readonly ICourseAndSubjectsHelper _courseAndSubjectsHelper;
+        private readonly IQueryHelper _queryHelper;
 
         public CoursesController(
             ICourseRepository courseRepository,
-            ICourseWithSubjectsRepository courseWithSubjectsRepository,
-            ISubjectRepository subjectRepository,
+            ICourseWithDisciplineRepository courseWithDisciplinesRepository,
+            IDisciplineRepository disciplineRepository,
             IUserHelper userHelper,
-            ICourseAndSubjectsHelper courseAndSubjectsHelper)
+            IQueryHelper queryHelper)
         {
             _courseRepository = courseRepository;
-            _courseWithSubjectsRepository = courseWithSubjectsRepository;
-            _subjectRepository = subjectRepository;
+            _courseWithDisciplinesRepository = courseWithDisciplinesRepository;
+            _disciplineRepository = disciplineRepository;
             _userHelper = userHelper;
-            _courseAndSubjectsHelper = courseAndSubjectsHelper;
+            _queryHelper = queryHelper;
         }
 
         // GET: Courses
@@ -40,7 +40,7 @@ namespace SchoolManagement.Web.Controllers
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id, Subject subject)
+        public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
             {
@@ -48,19 +48,20 @@ namespace SchoolManagement.Web.Controllers
             }
 
             var course = await _courseRepository.GetByIdAsync(id.Value);
-            var list = _courseWithSubjectsRepository.GetCourseWithSubjects(id.Value);
-            
-            subject.SubjectsAndCourses = list.ToList();
 
-            var cws = _subjectRepository.GetSubjectsWithCourse(list);
+            var courses = _courseRepository.GetAll();
+            var cwd = _courseWithDisciplinesRepository.GetAll();
+            var list = _disciplineRepository.GetAll();
+
+            var result = _queryHelper.GetDisciplines(courses, cwd, list, id.Value);
+
+            var model = _courseRepository.CourseAndDisciplines(course, result);
 
             if (course == null)
             {
                 return NotFound();
             }
 
-            var model = _courseAndSubjectsHelper.ToCourseSubjectViewModel(course, cws);
-            
             return View(model);
         }
 
@@ -95,8 +96,8 @@ namespace SchoolManagement.Web.Controllers
             }
 
             var course = await _courseRepository.GetByIdAsync(id.Value);
-            var model = _courseRepository.ToAddSubjectsViewModel(course);
-
+            var model = _courseRepository.ToAddDisciplinesViewModel(course);
+            
             if (course == null)
             {
                 return NotFound();
@@ -110,7 +111,7 @@ namespace SchoolManagement.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Course course, AddSubjectsViewModel model)
+        public async Task<IActionResult> Edit(Course course, AddDisciplinesViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -119,8 +120,12 @@ namespace SchoolManagement.Web.Controllers
                     course.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _courseRepository.UpdateAsync(course);
                     
-                    var cws = _courseWithSubjectsRepository.ToAddCourseWithSubjects(course.Id, model);
-                    await _courseWithSubjectsRepository.CreateAsync(cws);
+                    var cwd = _courseWithDisciplinesRepository.ToAddCourseWithDisciplines(course.Id, model);
+
+                    if (cwd.DisciplineId != 0)
+                    {
+                        await _courseWithDisciplinesRepository.CreateAsync(cwd);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -135,7 +140,6 @@ namespace SchoolManagement.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
             return View(course);
         }
 
@@ -164,6 +168,23 @@ namespace SchoolManagement.Web.Controllers
             var course = await _courseRepository.GetByIdAsync(id);
             await _courseRepository.DeleteAsync(course);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> DeleteCwd(int? id, CourseAndDisciplinesViewModel courseAndDisciplinesViewModel)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var cwd = _courseWithDisciplinesRepository.GetCwdAsync(id.Value, courseAndDisciplinesViewModel).FirstOrDefault();
+            if (cwd == null)
+            {
+                return NotFound();
+            }
+
+            var cwdId = await _courseWithDisciplinesRepository.DeleteCwdAsync(cwd);
+            return this.RedirectToAction($"Details/{cwdId}");
         }
     }
 }
