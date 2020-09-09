@@ -6,30 +6,34 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class DisciplinesController : Controller
+    public class ClassesController : Controller
     {
-        private readonly IDisciplineRepository _disciplineRepository;
+        private readonly IClassRepository _classRepository;
+        private readonly ICourseRepository _courseRepository;
         private readonly IUserHelper _userHelper;
 
-        public DisciplinesController(
-            IDisciplineRepository disciplineRepository,  
+        public ClassesController(
+            IClassRepository classRepository,
+            ICourseRepository courseRepository,
             IUserHelper userHelper)
         {
-            _disciplineRepository = disciplineRepository;
+            _classRepository = classRepository;
+            _courseRepository = courseRepository;
             _userHelper = userHelper;
         }
 
-        // GET: Subjects
+        // GET: Classes
         public IActionResult Index()
         {
-            return View(_disciplineRepository.GetAll().OrderBy(s => s.Name));
+            return View(_classRepository.GetAll().OrderBy(c => c.NameClass));
         }
 
-        // GET: Subjects/Details/5
+        // GET: Classes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,38 +41,56 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
-            var discipline = await _disciplineRepository.GetByIdAsync(id.Value);
-            if (discipline == null)
+            var itemClass = await _classRepository.GetByIdAsync(id.Value);
+            if (itemClass == null)
             {
                 return NotFound();
             }
 
-            return View(discipline);
+            return View(itemClass);
         }
 
-        // GET: Subjects/Create
+        // GET: Classes/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new ClassAndCourseViewModel
+            {
+                Courses = _classRepository.GetComboCourses()
+            };
+
+            return View(model);
         }
 
-        // POST: Subjects/Create
+        // POST: Classes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Discipline discipline)
+        public async Task<IActionResult> Create(ClassAndCourseViewModel model)
         {
             if (ModelState.IsValid)
             {
-                discipline.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                await _disciplineRepository.CreateAsync(discipline);
+                model.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                var course = await _courseRepository.GetCourseAsync(model.CourseId);
+
+                var itemClass = new Class 
+                {
+                    Id = model.Id,
+                    NameClass = model.NameClass,
+                    BeginSchedule = model.BeginSchedule,
+                    EndSchedule = model.EndSchedule,
+                    Course = course,
+                    CourseId = model.CourseId,
+                    User = model.User
+                };
+
+                await _classRepository.CreateAsync(itemClass);
                 return RedirectToAction(nameof(Index));
             }
-            return View(discipline);
+            return View(model);
         }
 
-        // GET: Subjects/Edit/5
+        // GET: Classes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,31 +98,31 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
-            var discipline = await _disciplineRepository.GetByIdAsync(id.Value);
-            if (discipline == null)
+            var itemClass = await _classRepository.GetByIdAsync(id.Value);
+            if (itemClass == null)
             {
                 return NotFound();
             }
-            return View(discipline);
+            return View(itemClass);
         }
 
-        // POST: Subjects/Edit/5
+        // POST: Classes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Discipline discipline)
+        public async Task<IActionResult> Edit(Class itemClass)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    discipline.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                    await _disciplineRepository.UpdateAsync(discipline);
+                    itemClass.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await _classRepository.UpdateAsync(itemClass);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _disciplineRepository.ExistAsync(discipline.Id))
+                    if (!await _classRepository.ExistAsync(itemClass.Id))
                     {
                         return NotFound();
                     }
@@ -111,10 +133,10 @@ namespace SchoolManagement.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(discipline);
+            return View(itemClass);
         }
 
-        // GET: Subjects/Delete/5
+        // GET: Classes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -122,22 +144,22 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
-            var discipline = await _disciplineRepository.GetByIdAsync(id.Value);
-            if (discipline == null)
+            var itemClass = await _classRepository.GetByIdAsync(id.Value);
+            if (itemClass == null)
             {
                 return NotFound();
             }
 
-            return View(discipline);
+            return View(itemClass);
         }
 
-        // POST: Subjects/Delete/5
+        // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var discipline = await _disciplineRepository.GetByIdAsync(id);
-            await _disciplineRepository.DeleteAsync(discipline);
+            var itemClass = await _classRepository.GetByIdAsync(id);
+            await _classRepository.DeleteAsync(itemClass);
             return RedirectToAction(nameof(Index));
         }
     }

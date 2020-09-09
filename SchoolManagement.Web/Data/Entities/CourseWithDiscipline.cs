@@ -11,5 +11,7 @@ namespace SchoolManagement.Web.Data.Entities
 
         [Required]
         public int CourseId { get; set; }
+
+        public User User { get; set; }
     }
 }

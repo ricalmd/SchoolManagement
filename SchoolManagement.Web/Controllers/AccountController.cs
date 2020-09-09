@@ -18,98 +18,60 @@ namespace SchoolManagement.Web.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
+        private readonly IMailHelper _mailHelper;
 
         public AccountController(
             IUserHelper userHelper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _configuration = configuration;
+            _mailHelper = mailHelper;
         }
 
-        public IActionResult Login()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>ChangePassword</returns>
+        public IActionResult ChangePassword()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// It receives as an parameter an object of the ChangePasswordViewModel class. If the validation
+        /// of the view is successful, a variable, user, receives the value of the User property through
+        /// the GetUserByEmailAsync() method. If user is null, a view is created with an error message, 
+        /// otherwise a result variable is created with the parameters of the ChangePasswordAsync() method.
+        /// If the operation was successful, it is switched to the ChangeUser view.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>ChangePassword view with values</returns>
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _userHelper.LoginAsync(model);
-                if (result.Succeeded)
-                {
-                    if (Request.Query.Keys.Contains("ReturnUrl"))
-                    {
-                        return Redirect(Request.Query["ReturnUrl"].First());
-                    }
-
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-
-            ModelState.AddModelError(string.Empty, "Failed to login");
-            return View(model);
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            await _userHelper.LogoutAsync();
-            return RedirectToAction("Index", "Home");
-        }
-
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterNewUserViewModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (this.ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(model.Username);
-                if(user == null)
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
                 {
-                    user = new User
+                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
                     {
-                        Name = model.Name,
-                        Email = model.Username,
-                        UserName = model.Username
-                    };
-
-                    var result = await _userHelper.AddUserAsync(user, model.Password);
-                    if(result != IdentityResult.Success)
-                    {
-                        this.ModelState.AddModelError(string.Empty, "O utilizador não pode ser criado");
-                        return this.View(model);
+                        return this.RedirectToAction("ChangeUser");
                     }
-
-                    var loginViewModel = new LoginViewModel
+                    else
                     {
-                        Password = model.Password,
-                        RememberMe = false,
-                        Username = model.Username
-                    };
-
-                    var result2 = await _userHelper.LoginAsync(loginViewModel);
-
-                    if (result2.Succeeded)
-                    {
-                        return this.RedirectToAction("Index", "Home");
+                        this.ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
                     }
-
-                    this.ModelState.AddModelError(string.Empty, "O utilizador não se pode logar");
-                    return this.View(model);
                 }
-                this.ModelState.AddModelError(string.Empty, "O nome de utilizador já está registado");
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "Utilizador não encontrado");
+                }
             }
+
             return this.View(model);
         }
 
@@ -118,7 +80,7 @@ namespace SchoolManagement.Web.Controllers
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
             var model = new ChangeUserViewModel();
 
-            if(user != null)
+            if (user != null)
             {
                 model.Name = user.Name;
             }
@@ -132,7 +94,7 @@ namespace SchoolManagement.Web.Controllers
             if (this.ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                if(user != null)
+                if (user != null)
                 {
                     user.Name = model.Name;
                     var response = await _userHelper.UpdateUserAsync(user);
@@ -154,36 +116,25 @@ namespace SchoolManagement.Web.Controllers
             return this.View(model);
         }
 
-        public IActionResult ChangePassword()
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            return this.View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
-            if (this.ModelState.IsValid)
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
             {
-                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                if(user != null)
-                {
-                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-                    if (result.Succeeded)
-                    {
-                        return this.RedirectToAction("ChangeUser");
-                    }
-                    else
-                    {
-                        this.ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
-                    }
-                }
-                else
-                {
-                    this.ModelState.AddModelError(string.Empty, "Utilizador não encontrado");
-                }
+                return this.NotFound();
             }
 
-            return this.View(model);
+            var user = await _userHelper.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return this.NotFound();
+            }
+            return View();
         }
 
         [HttpPost]
@@ -226,6 +177,154 @@ namespace SchoolManagement.Web.Controllers
             }
 
             return this.BadRequest();
+        }
+
+        public IActionResult Login()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userHelper.LoginAsync(model);
+                if (result.Succeeded)
+                {
+                    if (Request.Query.Keys.Contains("ReturnUrl"))
+                    {
+                        return Redirect(Request.Query["ReturnUrl"].First());
+                    }
+
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Failed to login");
+            return View(model);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _userHelper.LogoutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult RecoverPassword()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "O email não corresponde a um utilizador registado.");
+                    return this.View(model);
+                }
+
+                var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+                var link = this.Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+
+                _mailHelper.SendMail(model.Email, "Alteração da password", $"<h1>Alteração da password</h1>" +
+                    $"Para alterar a password, use este link:</br></br>" +
+                    $"<a href = \"{link}\">Alterar Password</a>");
+                this.ViewBag.Message = "As instruções para recuperar a password, foram enviadas por email.";
+                return this.View();
+            }
+            return this.View(model);
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterNewUserViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+                if(user == null)
+                {
+                    user = new User
+                    {
+                        Name = model.Name,
+                        TaxpayerNumber = model.TaxpayerNumber,
+                        Address = model.Address,
+                        PostalCode = model.PostalCode,
+                        IBAN = model.IBAN,
+                        BirthDate = model.BirthDate,
+                        Gender = model.Gender,
+                        Email = model.Username,
+                        Phone = model.Phone,
+                        UserName = model.Username
+                    };
+                        
+                    var result = await _userHelper.AddUserAsync(user, model.Password);
+                    if(result != IdentityResult.Success)
+                    {
+                        this.ModelState.AddModelError(string.Empty, "O utilizador não pode ser criado");
+                        return this.View(model);
+                    }
+                    var myToken = await _userHelper.GenerateEmailConfirmationTokenAsyc(user);
+                    var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
+                    {
+                        userid = user.Id,
+                        token = myToken
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    _mailHelper.SendMail(model.Username, "Email de confirmação", $"<h1>Email de confirmação</h1>" +
+                        $"Para confirmar a abertura de conta, " +
+                        $"favor de abrir este link:</br></br><a href = \"{tokenLink}\">Confirmar email</a>");
+                    this.ViewBag.Message = "As instruções para completar a abertura de conta, foram enviadas por email.";
+                    
+                    return this.View(model);
+                }
+                this.ModelState.AddModelError(string.Empty, "O nome de utilizador já está registado");
+            }
+            return this.View(model);
+        }
+
+        public IActionResult ResetPassword(string token)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(model.UserName);
+            if (user != null)
+            {
+                var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    this.ViewBag.Message = "Password alterada com sucesso.";
+                    return this.View();
+                }
+
+                this.ViewBag.Message = "Erro na alteração do email.";
+                return View(model);
+            }
+
+            this.ViewBag.Message = "Utilizador não encontrado.";
+            return View(model);
         }
     }
 }

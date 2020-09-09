@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
@@ -16,6 +17,20 @@ namespace SchoolManagement.Web.Data.Repositories
             _context = context;
         }
 
+        public CourseAndDisciplinesViewModel CourseAndDisciplines(Course course, ICollection<Discipline> disciplines)
+        {
+            return new CourseAndDisciplinesViewModel
+            {
+                Id = course.Id,
+                Name = course.Name,
+                QNQ = course.QNQ,
+                QEQ = course.QEQ,
+                Profile = course.Profile,
+                Reference = course.Reference,
+                Disciplines = disciplines.ToList()
+            };
+        }
+
         public IQueryable GetAllWithUsers()
         {
             return _context.Courses.Include(c => c.User);
@@ -23,10 +38,10 @@ namespace SchoolManagement.Web.Data.Repositories
 
         public IEnumerable<SelectListItem> GetComboSubjects()
         {
-            var list = _context.Disciplines.Select(s => new SelectListItem 
+            var list = _context.Disciplines.Select(d => new SelectListItem 
             {
-                Text = s.Name,
-                Value = s.Id.ToString()
+                Text = d.Name,
+                Value = d.Id.ToString()
             }).ToList();
 
             list.Insert(0, new SelectListItem 
@@ -36,6 +51,11 @@ namespace SchoolManagement.Web.Data.Repositories
             });
 
             return list;
+        }
+
+        public async Task<Course> GetCourseAsync(int id)
+        {
+            return await _context.Courses.FindAsync(id);
         }
 
         public AddDisciplinesViewModel ToAddDisciplinesViewModel(Course course)
@@ -50,20 +70,6 @@ namespace SchoolManagement.Web.Data.Repositories
                 QNQ = course.QNQ,
                 Reference = course.Reference,
                 User = course.User
-            };
-        }
-
-        public CourseAndDisciplinesViewModel CourseAndDisciplines(Course course, ICollection<Discipline> disciplines)
-        {
-            return new CourseAndDisciplinesViewModel
-            {
-                Id = course.Id,
-                Name = course.Name,
-                QNQ = course.QNQ,
-                QEQ = course.QEQ,
-                Profile = course.Profile,
-                Reference = course.Reference,
-                Disciplines = disciplines
             };
         }
     }

@@ -14,7 +14,7 @@ namespace SchoolManagement.Web.Controllers
     public class CoursesController : Controller
     {
         private readonly ICourseRepository _courseRepository;
-        private readonly ICourseWithDisciplineRepository _courseWithDisciplinesRepository;
+        private readonly ICourseWithDisciplineRepository _courseWithDisciplineRepository;
         private readonly IDisciplineRepository _disciplineRepository;
         private readonly IUserHelper _userHelper;
         private readonly IQueryHelper _queryHelper;
@@ -27,7 +27,7 @@ namespace SchoolManagement.Web.Controllers
             IQueryHelper queryHelper)
         {
             _courseRepository = courseRepository;
-            _courseWithDisciplinesRepository = courseWithDisciplinesRepository;
+            _courseWithDisciplineRepository = courseWithDisciplinesRepository;
             _disciplineRepository = disciplineRepository;
             _userHelper = userHelper;
             _queryHelper = queryHelper;
@@ -38,7 +38,7 @@ namespace SchoolManagement.Web.Controllers
         {
             return View(_courseRepository.GetAll().OrderBy(c => c.Name));
         }
-
+        
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -50,7 +50,7 @@ namespace SchoolManagement.Web.Controllers
             var course = await _courseRepository.GetByIdAsync(id.Value);
 
             var courses = _courseRepository.GetAll();
-            var cwd = _courseWithDisciplinesRepository.GetAll();
+            var cwd = _courseWithDisciplineRepository.GetAll();
             var list = _disciplineRepository.GetAll();
 
             var result = _queryHelper.GetDisciplines(courses, cwd, list, id.Value);
@@ -120,11 +120,11 @@ namespace SchoolManagement.Web.Controllers
                     course.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _courseRepository.UpdateAsync(course);
                     
-                    var cwd = _courseWithDisciplinesRepository.ToAddCourseWithDisciplines(course.Id, model);
+                    var cwd = _courseWithDisciplineRepository.ToAddCourseWithDisciplines(course.Id, course.User, model);
 
                     if (cwd.DisciplineId != 0)
                     {
-                        await _courseWithDisciplinesRepository.CreateAsync(cwd);
+                        await _courseWithDisciplineRepository.CreateAsync(cwd);
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -152,6 +152,7 @@ namespace SchoolManagement.Web.Controllers
             }
 
             var course = await _courseRepository.GetByIdAsync(id.Value);
+
             if (course == null)
             {
                 return NotFound();
@@ -166,25 +167,36 @@ namespace SchoolManagement.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _courseRepository.GetByIdAsync(id);
+            int cwd = _courseWithDisciplineRepository.GetByCourseId(id).Count();
+
+            while(cwd > 0)
+            {
+                var cwdList = _courseWithDisciplineRepository.GetByCourseId(id).FirstOrDefault();
+                await _courseWithDisciplineRepository.DeleteAsync(cwdList);
+                cwd--;
+            }
+
             await _courseRepository.DeleteAsync(course);
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> DeleteCwd(int? id, CourseAndDisciplinesViewModel courseAndDisciplinesViewModel)
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCwd(int? id, int? disciplineId)
         {
-            if (id == null)
+            if (id == null || disciplineId == null)
             {
                 return NotFound();
             }
 
-            var cwd = _courseWithDisciplinesRepository.GetCwdAsync(id.Value, courseAndDisciplinesViewModel).FirstOrDefault();
+            var cwd = _courseWithDisciplineRepository.GetCwdAsync(id.Value, disciplineId.Value).FirstOrDefault();
             if (cwd == null)
             {
                 return NotFound();
             }
 
-            var cwdId = await _courseWithDisciplinesRepository.DeleteCwdAsync(cwd);
-            return this.RedirectToAction($"Details/{cwdId}");
+            await _courseWithDisciplineRepository.DeleteCwdAsync(cwd);
+            return this.RedirectToAction($"Details/{id}");
         }
     }
 }

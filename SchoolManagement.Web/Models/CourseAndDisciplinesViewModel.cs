@@ -5,6 +5,6 @@ namespace SchoolManagement.Web.Models
 {
     public class CourseAndDisciplinesViewModel : Course
     {
-        public ICollection<Discipline> Disciplines { get; set; }
+        public List<Discipline> Disciplines { get; set; }
     }
 }

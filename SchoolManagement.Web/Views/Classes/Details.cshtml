@@ -1,0 +1,61 @@
+﻿@model SchoolManagement.Web.Data.Entities.Class
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Detalhes</h2>
+
+<div>
+    <h4>Turma</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NameClass)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NameClass)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BeginSchedule)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BeginSchedule)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EndSchedule)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EndSchedule)
+        </dd>
+    </dl>
+</div>
+<h4>Curso</h4>
+<table class="table">
+    <tbody>
+        <tr>
+            <!--<td>
+                Html.DisplayFor(modelItem => Model.Disciplines.Name)
+            </td>
+            <td>
+                Html.DisplayFor(modelItem => Model.Disciplines.Objectiv)
+            </td>
+            <td>
+                Html.DisplayFor(modelItem => Model.Disciplines.Workload)
+            </td>
+            <td>
+                Html.DisplayFor(modelItem => Model.Disciplines.Credit)
+            </td>
+            <td>
+                Html.DisplayFor(modelItem => Model.Disciplines.Content)
+            </td>
+            <td>
+                Html.DisplayFor(modelItem => Model.Disciplines.Code)
+            </td>-->
+        </tr>
+    </tbody>
+</table>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-success">Regressar</a>
+</div>

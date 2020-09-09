@@ -14,20 +14,6 @@ namespace SchoolManagement.Web.Data.Repositories
             _context = context;
         }
 
-        public CourseWithDiscipline ToAddCourseWithDisciplines(int id, AddDisciplinesViewModel model)
-        {
-            return new CourseWithDiscipline
-            {
-                CourseId = id,
-                DisciplineId = model.DisciplineId
-            };
-        }
-
-        public IQueryable<CourseWithDiscipline> GetByCourseId(int id)
-        {
-            return _context.CourseWithDisciplines.Where(c => c.CourseId == id);
-        }
-
         public async Task<int> DeleteCwdAsync(CourseWithDiscipline courseWithDiscipline)
         {
             if (courseWithDiscipline == null)
@@ -40,10 +26,25 @@ namespace SchoolManagement.Web.Data.Repositories
             return courseWithDiscipline.CourseId;
         }
 
-        public IQueryable<CourseWithDiscipline> GetCwdAsync(int id, CourseAndDisciplinesViewModel courseAndDisciplinesViewModel)
+        public IQueryable<CourseWithDiscipline> GetByCourseId(int id)
+        {
+            return _context.CourseWithDisciplines.Where(c => c.CourseId == id);
+        }
+
+        public IQueryable<CourseWithDiscipline> GetCwdAsync(int courseId, int disciplineId)
         {
             return _context.CourseWithDisciplines
-                .Where(c => c.DisciplineId.Equals(id) && c.CourseId.Equals(courseAndDisciplinesViewModel.Id));
+                .Where(c => c.DisciplineId.Equals(disciplineId) && c.CourseId.Equals(courseId));
+        }
+
+        public CourseWithDiscipline ToAddCourseWithDisciplines(int id, User user, AddDisciplinesViewModel model)
+        {
+            return new CourseWithDiscipline
+            {
+                CourseId = id,
+                User = user,
+                DisciplineId = model.DisciplineId
+            };
         }
     }
 }

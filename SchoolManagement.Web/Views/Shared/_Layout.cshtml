@@ -33,15 +33,14 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="Disciplines" asp-action="Index">Disciplinas</a></li>
-                    <li><a asp-area="" asp-controller="Courses" asp-action="Index">Cursos</a></li>
-                    @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                     {
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a asp-area="" asp-controller="" asp-action="">Users</a></li>
-                                <li><a asp-area="" asp-controller="" asp-action="">Roles</a></li>
+                                <li><a asp-area="" asp-controller="Disciplines" asp-action="Index">Gestão das Disciplinas</a></li>
+                                <li><a asp-area="" asp-controller="Courses" asp-action="Index">Gestão dos Cursos</a></li>
+                                <li><a asp-area="" asp-controller="Classes" asp-action="Index">Gestão das Turmas</a></li>
                             </ul>
                         </li>
                     }
@@ -67,7 +66,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2020 - SchoolManagement</p>
+            <p>Ricardo &copy; @DateTime.UtcNow.Year - SchoolManagement</p>
         </footer>
     </div>
 

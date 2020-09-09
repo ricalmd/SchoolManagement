@@ -12,6 +12,8 @@ namespace SchoolManagement.Web.Data
 
         public DbSet<CourseWithDiscipline> CourseWithDisciplines { get; set; }
 
+        public DbSet<Class> Classes { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 

@@ -1,15 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SchoolManagement.Web.Data.Entities;
 
 namespace SchoolManagement.Web.Models
 {
-    public class RegisterNewUserViewModel
+    public class RegisterNewUserViewModel : User
     {
         [Required]
-        [Display(Name = "Nome")]
-        public string Name { get; set; }
-
-        [Required]
         [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email")]
         public string Username { get; set; }
 
         [Required]

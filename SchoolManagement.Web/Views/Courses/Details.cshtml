@@ -64,30 +64,35 @@
             <td>
                 <h5>Código</h5>
             </td>
-        </tr>
-        @foreach (var item in Model.Disciplines)
+        </tr> 
+        @for (var i = 0; i < Model.Disciplines.Count(); i++)
         {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
+            @Html.DisplayFor(modelItem => Model.Disciplines[i].Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Objectiv)
+            @Html.DisplayFor(modelItem => Model.Disciplines[i].Objectiv)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Workload)
+            @Html.DisplayFor(modelItem => Model.Disciplines[i].Workload)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Credit)
+            @Html.DisplayFor(modelItem => Model.Disciplines[i].Credit)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Content)
+            @Html.DisplayFor(modelItem => Model.Disciplines[i].Content)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Code)
+            @Html.DisplayFor(modelItem => Model.Disciplines[i].Code)
         </td>
         <td>
-            <a asp-action="DeleteCwd" asp-route-id="@Html.DisplayFor(modelItem => item.Id)" class="btn btn-danger">Delete</a>
+            @{ int disciplineId = Convert.ToInt32(Model.Disciplines[i].Id);}
+            <form asp-action="Details">
+                <input asp-for="Id" class="hidden" />
+                <input asp-for="@disciplineId" class="hidden" />
+                <input type="submit" value="Apagar" class="btn btn-danger" />
+            </form>
         </td>
     </tr>
         }

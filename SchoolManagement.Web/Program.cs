@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolManagement.Web.Data;
@@ -19,8 +20,15 @@ namespace SchoolManagement.Web
             var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
             using (var scope = scopeFactory.CreateScope())
             {
-                var seeder = scope.ServiceProvider.GetService<SeedDb>();
-                seeder.SeedAsync().Wait();
+                try
+                {
+                    var seeder = scope.ServiceProvider.GetService<SeedDb>();
+                    seeder.SeedAsync().Wait();
+                }
+                catch(Exception e)
+                {
+                    
+                }
             }
         }
 

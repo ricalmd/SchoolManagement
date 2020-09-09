@@ -43,7 +43,9 @@ namespace SchoolManagement.Web.Data
                     Gender = "Masculino",
                     Email = "ricardo.formando.cinel@gmail.com",
                     UserName = "ricardo.formando.cinel@gmail.com",
-                    PhoneNumber = "123123123"
+                    PhoneNumber = "123123123",
+                    Phone = "123123123",
+                    EmailConfirmed = true
                 };
                 var result = await _userHelper.AddUserAsync(user, "123456");
                 if (result != IdentityResult.Success)
@@ -72,12 +74,6 @@ namespace SchoolManagement.Web.Data
 
                 await _context.SaveChangesAsync();
             }
-
-            if (!_context.CourseWithDisciplines.Any())
-            {
-                AddCourseWithDisciplines();
-                await _context.SaveChangesAsync();
-            }
         }
 
         private void AddCourses(string name, User user)
@@ -104,15 +100,6 @@ namespace SchoolManagement.Web.Data
                 Objectiv = "Testar isto",
                 Content = "Testar",
                 User = user
-            });
-        }
-
-        private void AddCourseWithDisciplines()
-        {
-            _context.CourseWithDisciplines.Add(new CourseWithDiscipline 
-            {
-                DisciplineId = 1,
-                CourseId = 1
             });
         }
     }
