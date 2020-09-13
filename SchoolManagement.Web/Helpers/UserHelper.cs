@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Models;
 
@@ -61,6 +64,25 @@ namespace SchoolManagement.Web.Helpers
         public async Task<string> GeneratePasswordResetTokenAsync(User user)
         {
             return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+        public IEnumerable<SelectListItem> GetComboUsers()
+        {
+            var users = _userManager.Users.Count();
+
+            var list = _userManager.Users.Select(u => new SelectListItem
+            {
+                Text = u.Email,
+                Value = u.Id.ToString()
+            }).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Selecionar disciplina)",
+                Value = "0"
+            });
+
+            return list;
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

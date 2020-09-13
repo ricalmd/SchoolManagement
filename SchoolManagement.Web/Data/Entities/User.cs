@@ -43,5 +43,8 @@ namespace SchoolManagement.Web.Data.Entities
         [MinLength(9, ErrorMessage = "O campo deve conter {1} caracteres.")]
         [MaxLength(9, ErrorMessage = "O campo deve conter {1} caracteres.")]
         public string Phone { get; set; }
+
+        [Required]
+        public string Status { get; set; }
     }
 }

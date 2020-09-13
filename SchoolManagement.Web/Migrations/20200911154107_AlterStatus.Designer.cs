@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagement.Web.Data;
 
-namespace SchoolManagement.Migrations
+namespace SchoolManagement.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200911154107_AlterStatus")]
+    partial class AlterStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,6 +239,19 @@ namespace SchoolManagement.Migrations
                     b.ToTable("Disciplines");
                 });
 
+            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("StatusName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
+                });
+
             modelBuilder.Entity("SchoolManagement.Web.Data.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -292,8 +307,7 @@ namespace SchoolManagement.Migrations
 
                     b.Property<string>("SecurityStamp");
 
-                    b.Property<string>("Status")
-                        .IsRequired();
+                    b.Property<string>("StatusName");
 
                     b.Property<string>("TaxpayerNumber")
                         .IsRequired()

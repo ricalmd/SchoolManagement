@@ -13,6 +13,8 @@ namespace SchoolManagement.Web.Data.Repositories
 
         IQueryable GetAllWithUsers();
 
+        Course GetAllWithCourse(int id);
+
         IEnumerable<SelectListItem> GetComboSubjects();
 
         Task<Course> GetCourseAsync(int id);

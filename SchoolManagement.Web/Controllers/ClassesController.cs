@@ -10,7 +10,7 @@ using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrativo")]
     public class ClassesController : Controller
     {
         private readonly IClassRepository _classRepository;
@@ -42,6 +42,8 @@ namespace SchoolManagement.Web.Controllers
             }
 
             var itemClass = await _classRepository.GetByIdAsync(id.Value);
+            itemClass.Course = _courseRepository.GetAllWithCourse(itemClass.CourseId);
+
             if (itemClass == null)
             {
                 return NotFound();

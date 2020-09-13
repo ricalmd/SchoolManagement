@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Models;
 
@@ -21,9 +23,12 @@ namespace SchoolManagement.Web.Helpers
 
         Task<string> GeneratePasswordResetTokenAsync(User user);
 
+        IEnumerable<SelectListItem> GetComboUsers();
+
         Task<User> GetUserByEmailAsync(string email);
 
         Task<User> GetUserByIdAsync(string userId);
+
 
         Task<bool> IsUserInRoleAsync(User user, string roleName);
 

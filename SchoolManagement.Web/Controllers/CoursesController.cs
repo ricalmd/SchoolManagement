@@ -10,7 +10,7 @@ using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrativo")]
     public class CoursesController : Controller
     {
         private readonly ICourseRepository _courseRepository;

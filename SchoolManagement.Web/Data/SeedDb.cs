@@ -26,7 +26,7 @@ namespace SchoolManagement.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
-            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Administrativo");
             await _userHelper.CheckRoleAsync("Student");
             
             var user = await _userHelper.GetUserByEmailAsync("ricardo.formando.cinel@gmail.com");
@@ -34,7 +34,7 @@ namespace SchoolManagement.Web.Data
             {
                 user = new User
                 {
-                    Name = "Ricardo Nuno Neiva de Admin",
+                    Name = "Ricardo Nuno Neiva de Almeida",
                     TaxpayerNumber = "123456789",
                     Address = "Rua da Avenida, n.º 1",
                     PostalCode = "1111-111 Lisboa",
@@ -45,17 +45,18 @@ namespace SchoolManagement.Web.Data
                     UserName = "ricardo.formando.cinel@gmail.com",
                     PhoneNumber = "123123123",
                     Phone = "123123123",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    Status = "Administrativo"
                 };
                 var result = await _userHelper.AddUserAsync(user, "123456");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Utilizador não pode ser criado no seeder");
                 }
-                var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+                var isInRole = await _userHelper.IsUserInRoleAsync(user, "Administrativo");
                 if (!isInRole)
                 {
-                    await _userHelper.AddUserToRoleAsync(user, "Admin");
+                    await _userHelper.AddUserToRoleAsync(user, "Administrativo");
                 }
             }
 

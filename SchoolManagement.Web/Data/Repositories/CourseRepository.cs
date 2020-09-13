@@ -17,6 +17,13 @@ namespace SchoolManagement.Web.Data.Repositories
             _context = context;
         }
 
+        /// <summary>
+        /// It receives from the controller, as parameters, an object of the Course class and an ICollection of
+        /// disciplines so that an object of the CourseAndDisciplinesViewModel class is generated.
+        /// </summary>
+        /// <param name="course"></param>
+        /// <param name="disciplines"></param>
+        /// <returns>CourseAndDisciplinesViewModel</returns>
         public CourseAndDisciplinesViewModel CourseAndDisciplines(Course course, ICollection<Discipline> disciplines)
         {
             return new CourseAndDisciplinesViewModel
@@ -31,9 +38,18 @@ namespace SchoolManagement.Web.Data.Repositories
             };
         }
 
+        /// <summary>
+        /// Get courses, including users.
+        /// </summary>
+        /// <returns></returns>
         public IQueryable GetAllWithUsers()
         {
             return _context.Courses.Include(c => c.User);
+        }
+
+        public Course GetAllWithCourse(int id)
+        {
+            return _context.Courses.Where(c => c.Id.Equals(id)).FirstOrDefault();
         }
 
         public IEnumerable<SelectListItem> GetComboSubjects()

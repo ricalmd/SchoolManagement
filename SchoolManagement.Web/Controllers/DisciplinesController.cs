@@ -9,7 +9,7 @@ using SchoolManagement.Web.Helpers;
 
 namespace SchoolManagement.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrativo")]
     public class DisciplinesController : Controller
     {
         private readonly IDisciplineRepository _disciplineRepository;

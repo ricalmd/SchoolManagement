@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -77,14 +78,22 @@ namespace SchoolManagement.Web.Controllers
 
         public async Task<IActionResult> ChangeUser()
         {
-            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            var model = new ChangeUserViewModel();
-
+            var email = _userHelper.GetComboUsers().ToList();
+            
+            var model = new ChangeUserViewModel 
+            {
+                Email = email
+            };
+            var user = await _userHelper.GetUserByEmailAsync(model.Email.FirstOrDefault().Text);
             if (user != null)
             {
                 model.Name = user.Name;
+                model.IBAN = user.IBAN;
+                model.Phone = user.Phone;
+                model.PostalCode = user.PostalCode;
+                model.Status = user.Status;
+                model.Address = user.Address;
             }
-
             return this.View(model);
         }
 
@@ -93,10 +102,17 @@ namespace SchoolManagement.Web.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                var email = _userHelper.GetComboUsers().FirstOrDefault();
+                var user = await _userHelper.GetUserByEmailAsync(email.Text);
+
                 if (user != null)
                 {
                     user.Name = model.Name;
+                    user.IBAN = model.IBAN;
+                    user.Phone = model.Phone;
+                    user.PostalCode = model.PostalCode;
+                    user.Status = model.Status;
+                    user.Address = model.Address;
                     var response = await _userHelper.UpdateUserAsync(user);
                     if (response.Succeeded)
                     {
@@ -249,6 +265,7 @@ namespace SchoolManagement.Web.Controllers
             return this.View(model);
         }
 
+        [Authorize(Roles = "Administrativo")]
         public IActionResult Register()
         {
             return View();
@@ -260,6 +277,7 @@ namespace SchoolManagement.Web.Controllers
             if (this.ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
+
                 if(user == null)
                 {
                     user = new User
@@ -273,7 +291,8 @@ namespace SchoolManagement.Web.Controllers
                         Gender = model.Gender,
                         Email = model.Username,
                         Phone = model.Phone,
-                        UserName = model.Username
+                        UserName = model.Username,
+                        Status = model.Status
                     };
                         
                     var result = await _userHelper.AddUserAsync(user, model.Password);
