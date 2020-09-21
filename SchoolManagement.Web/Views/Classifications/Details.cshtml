@@ -1,0 +1,43 @@
+﻿@model SchoolManagement.Web.Models.ClassificationViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ClassificationViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Name)
+        </dd>
+    </dl>
+</div>
+<h4>Pauta</h4>
+<table class="table">
+    <tbody>
+        @foreach (var item in Model.Classifications)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.JustifiedAbsence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnjustifiedAbsence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Score)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -17,20 +17,17 @@ namespace SchoolManagement.Web.Controllers
         private readonly ICourseWithDisciplineRepository _courseWithDisciplineRepository;
         private readonly IDisciplineRepository _disciplineRepository;
         private readonly IUserHelper _userHelper;
-        private readonly IQueryHelper _queryHelper;
 
         public CoursesController(
             ICourseRepository courseRepository,
             ICourseWithDisciplineRepository courseWithDisciplinesRepository,
             IDisciplineRepository disciplineRepository,
-            IUserHelper userHelper,
-            IQueryHelper queryHelper)
+            IUserHelper userHelper)
         {
             _courseRepository = courseRepository;
             _courseWithDisciplineRepository = courseWithDisciplinesRepository;
             _disciplineRepository = disciplineRepository;
             _userHelper = userHelper;
-            _queryHelper = queryHelper;
         }
 
         // GET: Courses
@@ -53,7 +50,7 @@ namespace SchoolManagement.Web.Controllers
             var cwd = _courseWithDisciplineRepository.GetAll();
             var list = _disciplineRepository.GetAll();
 
-            var result = _queryHelper.GetDisciplines(courses, cwd, list, id.Value);
+            var result = _disciplineRepository.GetDisciplines(courses, cwd, list, id.Value);
 
             var model = _courseRepository.CourseAndDisciplines(course, result);
 
@@ -118,9 +115,10 @@ namespace SchoolManagement.Web.Controllers
                 try
                 {
                     course.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    
                     await _courseRepository.UpdateAsync(course);
                     
-                    var cwd = _courseWithDisciplineRepository.ToAddCourseWithDisciplines(course.Id, course.User, model);
+                    var cwd = _courseWithDisciplineRepository.ToAddCourseWithDisciplines(course, course.User, model.DisciplineId);
 
                     if (cwd.DisciplineId != 0)
                     {
@@ -167,14 +165,6 @@ namespace SchoolManagement.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _courseRepository.GetByIdAsync(id);
-            int cwd = _courseWithDisciplineRepository.GetByCourseId(id).Count();
-
-            while(cwd > 0)
-            {
-                var cwdList = _courseWithDisciplineRepository.GetByCourseId(id).FirstOrDefault();
-                await _courseWithDisciplineRepository.DeleteAsync(cwdList);
-                cwd--;
-            }
 
             await _courseRepository.DeleteAsync(course);
             return RedirectToAction(nameof(Index));

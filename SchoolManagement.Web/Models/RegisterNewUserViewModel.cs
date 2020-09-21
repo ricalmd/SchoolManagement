@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SchoolManagement.Web.Data.Entities;
 
 namespace SchoolManagement.Web.Models
@@ -16,5 +19,13 @@ namespace SchoolManagement.Web.Models
         [Required]
         [Compare("Password")]
         public string Confirm { get; set; }
+
+        public int ClassId { get; set; }
+
+        [Display(Name = "Lista de turmas")]
+        public IEnumerable<SelectListItem> Class { get; set; }
+
+        [Display(Name = "Fotografia")]
+        public IFormFile Photo { get; set; }
     }
 }

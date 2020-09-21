@@ -23,13 +23,13 @@ namespace SchoolManagement.Web.Controllers
             _userHelper = userHelper;
         }
 
-        // GET: Subjects
+        // GET: Disciplines
         public IActionResult Index()
         {
             return View(_disciplineRepository.GetAll().OrderBy(s => s.Name));
         }
 
-        // GET: Subjects/Details/5
+        // GET: Disciplines/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,13 +46,13 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
-        // GET: Subjects/Create
+        // GET: Disciplines/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Subjects/Create
+        // POST: Disciplines/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +68,7 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
-        // GET: Subjects/Edit/5
+        // GET: Disciplines/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,7 +84,7 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
-        // POST: Subjects/Edit/5
+        // POST: Disciplines/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -114,7 +114,7 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
-        // GET: Subjects/Delete/5
+        // GET: Disciplines/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,7 +131,7 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
-        // POST: Subjects/Delete/5
+        // POST: Disciplines/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

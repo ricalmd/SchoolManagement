@@ -63,11 +63,13 @@ namespace SchoolManagement.Web
             services.AddTransient<SeedDb>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
-            services.AddScoped<IQueryHelper, QueryHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<ICourseWithDisciplineRepository, CourseWithDisciplineRepository>();
             services.AddScoped<IDisciplineRepository, DisciplineRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IClassRepository, ClassRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IClassificationRepository, ClassificationRepository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

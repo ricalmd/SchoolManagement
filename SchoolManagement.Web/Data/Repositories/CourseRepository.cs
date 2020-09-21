@@ -52,7 +52,7 @@ namespace SchoolManagement.Web.Data.Repositories
             return _context.Courses.Where(c => c.Id.Equals(id)).FirstOrDefault();
         }
 
-        public IEnumerable<SelectListItem> GetComboSubjects()
+        public IEnumerable<SelectListItem> GetComboDisciplines()
         {
             var list = _context.Disciplines.Select(d => new SelectListItem 
             {
@@ -78,7 +78,7 @@ namespace SchoolManagement.Web.Data.Repositories
         {
             return new AddDisciplinesViewModel
             {
-                Discipline = GetComboSubjects(),
+                Discipline = GetComboDisciplines(),
                 Id = course.Id,
                 Name = course.Name,
                 Profile = course.Profile,

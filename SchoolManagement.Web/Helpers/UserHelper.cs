@@ -29,8 +29,13 @@ namespace SchoolManagement.Web.Helpers
             return await _userManager.CreateAsync(user, password);
         }
 
-        public async Task AddUserToRoleAsync(User user, string roleName)
+        public async Task AddUserToRoleAsync(User user, string roleName, string outdatedRole)
         {
+            if (outdatedRole != string.Empty)
+            {
+                await _userManager.RemoveFromRoleAsync(user, outdatedRole);
+            }
+
             await _userManager.AddToRoleAsync(user, roleName);
         }
 
@@ -66,14 +71,17 @@ namespace SchoolManagement.Web.Helpers
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
+        public IQueryable<User> GetAllUsers()
+        {
+            return _userManager.Users.Select(u => u);
+        }
+
         public IEnumerable<SelectListItem> GetComboUsers()
         {
-            var users = _userManager.Users.Count();
-
             var list = _userManager.Users.Select(u => new SelectListItem
             {
                 Text = u.Email,
-                Value = u.Id.ToString()
+                Value = u.Id
             }).ToList();
 
             list.Insert(0, new SelectListItem
@@ -97,7 +105,7 @@ namespace SchoolManagement.Web.Helpers
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
-            return await _userManager.IsInRoleAsync(user, "Admin");
+            return await _userManager.IsInRoleAsync(user, roleName);
         }
 
         public async Task<SignInResult> LoginAsync(LoginViewModel model)

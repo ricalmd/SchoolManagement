@@ -29,12 +29,5 @@ namespace SchoolManagement.Web.Models
         [MinLength(9, ErrorMessage = "O campo deve conter {1} caracteres.")]
         [MaxLength(9, ErrorMessage = "O campo deve conter {1} caracteres.")]
         public string Phone { get; set; }
-
-        [Display(Name = "Tipo de Utilizador")]
-        public string Status { get; set; }
-
-        public int EmailId { get; set; }
-
-        public IEnumerable<SelectListItem> Email { get; set; }
     }
 }

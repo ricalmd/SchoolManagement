@@ -15,15 +15,18 @@ namespace SchoolManagement.Web.Controllers
     {
         private readonly IClassRepository _classRepository;
         private readonly ICourseRepository _courseRepository;
+        private readonly IStudentRepository _studentRepository;
         private readonly IUserHelper _userHelper;
 
         public ClassesController(
             IClassRepository classRepository,
             ICourseRepository courseRepository,
+            IStudentRepository studentRepository,
             IUserHelper userHelper)
         {
             _classRepository = classRepository;
             _courseRepository = courseRepository;
+            _studentRepository = studentRepository;
             _userHelper = userHelper;
         }
 
@@ -44,12 +47,28 @@ namespace SchoolManagement.Web.Controllers
             var itemClass = await _classRepository.GetByIdAsync(id.Value);
             itemClass.Course = _courseRepository.GetAllWithCourse(itemClass.CourseId);
 
+            var users = _userHelper.GetAllUsers();
+            var students = _studentRepository.GetAll();
+            var classes = _classRepository.GetAll();
+            
+            var selected = _studentRepository.GetStudents(classes, students, users, itemClass.Id);
+
             if (itemClass == null)
             {
                 return NotFound();
             }
 
-            return View(itemClass);
+            var list = new ClassWithStudentsViewModel
+            {
+                Id = itemClass.Id,
+                NameClass = itemClass.NameClass,
+                BeginSchedule = itemClass.BeginSchedule,
+                EndSchedule = itemClass.EndSchedule,
+                Course = itemClass.Course,
+                Users = selected
+            };
+
+            return View(list);
         }
 
         // GET: Classes/Create
@@ -163,6 +182,25 @@ namespace SchoolManagement.Web.Controllers
             var itemClass = await _classRepository.GetByIdAsync(id);
             await _classRepository.DeleteAsync(itemClass);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCwd(int? id, string userId)
+        {
+            if (id == null || userId == null)
+            {
+                return NotFound();
+            }
+
+            var cwd = _studentRepository.GetStudentAsync(id.Value, userId).FirstOrDefault();
+            if (cwd == null)
+            {
+                return NotFound();
+            }
+
+            await _studentRepository.DeleteStudentAsync(cwd);
+            return this.RedirectToAction($"Details/{id}");
         }
     }
 }

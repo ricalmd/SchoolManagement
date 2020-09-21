@@ -1,4 +1,4 @@
-﻿@model SchoolManagement.Web.Data.Entities.Class
+﻿@model SchoolManagement.Web.Models.ClassWithStudentsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -42,6 +42,34 @@
         </dd>
     </dl>
 </div>
+<h4>Alunos</h4>
+<table class="table">
+    <tr>
+        <td>
+            Nome
+        </td>
+    </tr>
+    @for (var i = 0; i < Model.Users.Count(); i++)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => Model.Users[i].Name)
+    </td>
+    <td>
+        @if (!string.IsNullOrEmpty(Model.Users[i].ImageUrl))
+        {
+            <img src="@Url.Content(Model.Users[i].ImageUrl)" alt="Image" style="width:100px;height:150px;max-width:100%;height:auto" />
+        }
+        @{ string userId = Model.Users[i].Id;}
+            <form asp-action="Details">
+                <input asp-for="Id" class="hidden" />
+                <input asp-for="@userId" class="hidden" />
+                <input type="submit" value="Apagar" class="btn btn-danger" />
+            </form>
+    </td>
+</tr>
+    }
+</table>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
     <a asp-action="Index" class="btn btn-success">Regressar</a>

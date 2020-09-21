@@ -27,7 +27,8 @@ namespace SchoolManagement.Web.Data
             await _context.Database.EnsureCreatedAsync();
 
             await _userHelper.CheckRoleAsync("Administrativo");
-            await _userHelper.CheckRoleAsync("Student");
+            await _userHelper.CheckRoleAsync("Aluno");
+            await _userHelper.CheckRoleAsync("Formador");
             
             var user = await _userHelper.GetUserByEmailAsync("ricardo.formando.cinel@gmail.com");
             if (user == null)
@@ -56,7 +57,7 @@ namespace SchoolManagement.Web.Data
                 var isInRole = await _userHelper.IsUserInRoleAsync(user, "Administrativo");
                 if (!isInRole)
                 {
-                    await _userHelper.AddUserToRoleAsync(user, "Administrativo");
+                    await _userHelper.AddUserToRoleAsync(user, "Administrativo", string.Empty);
                 }
             }
 

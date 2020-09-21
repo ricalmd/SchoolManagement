@@ -10,7 +10,10 @@ namespace SchoolManagement.Web.Data.Entities
         public int DisciplineId { get; set; }
 
         [Required]
-        public int CourseId { get; set; }
+        public Discipline Discipline { get; set; }
+
+        [Required]
+        public Course Course { get; set; }
 
         public User User { get; set; }
     }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SchoolManagement.Web.Data.Entities;
+using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
 using SchoolManagement.Web.Models;
 
@@ -19,15 +20,24 @@ namespace SchoolManagement.Web.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
+        private readonly IStudentRepository _studentRepository;
+        private readonly IClassRepository _classRepository;
+        private readonly IImageHelper _imageHelper;
         private readonly IMailHelper _mailHelper;
 
         public AccountController(
             IUserHelper userHelper,
             IConfiguration configuration,
+            IStudentRepository studentRepository,
+            IClassRepository classRepository,
+            IImageHelper imageHelper,
             IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _configuration = configuration;
+            _studentRepository = studentRepository;
+            _classRepository = classRepository;
+            _imageHelper = imageHelper;
             _mailHelper = mailHelper;
         }
 
@@ -76,22 +86,70 @@ namespace SchoolManagement.Web.Controllers
             return this.View(model);
         }
 
+        public IActionResult ChangeStatus()
+        {
+            var model = new ChangeStatusViewModel();
+            model.Email = _userHelper.GetComboUsers();
+            model.Class = _studentRepository.GetComboClasses();
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatus(ChangeStatusViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByIdAsync(model.EmailId);
+                await _userHelper.AddUserToRoleAsync(user, model.Status, user.Status);
+
+                if (user.Status == "Aluno")
+                {
+                    var student = new Student
+                    {
+                        UserId = user.Id,
+                        ClassId = model.ClassId
+                    };
+                    await _studentRepository.CreateAsync(student);
+                }
+
+                if (user != null)
+                {
+                    user.Status = model.Status;
+
+                    var response = await _userHelper.UpdateUserAsync(user);
+                    if (response.Succeeded)
+                    {
+                        this.ViewBag.UserMessage = "Utilizador atualizado";
+                    }
+                    else
+                    {
+                        this.ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                    }
+
+                    _mailHelper.SendMail(user.UserName, "Informação", $"<h1>O tipo de utilizador foi alterado para" +
+                        $" {model.Status}</h1>");
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "Utilizador não encontrado");
+                }
+            }
+
+            return this.View(model);
+        }
+
         public async Task<IActionResult> ChangeUser()
         {
-            var email = _userHelper.GetComboUsers().ToList();
-            
-            var model = new ChangeUserViewModel 
-            {
-                Email = email
-            };
-            var user = await _userHelper.GetUserByEmailAsync(model.Email.FirstOrDefault().Text);
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var model = new ChangeUserViewModel(); 
+
             if (user != null)
             {
                 model.Name = user.Name;
                 model.IBAN = user.IBAN;
                 model.Phone = user.Phone;
                 model.PostalCode = user.PostalCode;
-                model.Status = user.Status;
                 model.Address = user.Address;
             }
             return this.View(model);
@@ -102,17 +160,15 @@ namespace SchoolManagement.Web.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var email = _userHelper.GetComboUsers().FirstOrDefault();
-                var user = await _userHelper.GetUserByEmailAsync(email.Text);
-
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name); 
                 if (user != null)
                 {
                     user.Name = model.Name;
                     user.IBAN = model.IBAN;
                     user.Phone = model.Phone;
                     user.PostalCode = model.PostalCode;
-                    user.Status = model.Status;
                     user.Address = model.Address;
+                    
                     var response = await _userHelper.UpdateUserAsync(user);
                     if (response.Succeeded)
                     {
@@ -268,7 +324,9 @@ namespace SchoolManagement.Web.Controllers
         [Authorize(Roles = "Administrativo")]
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterNewUserViewModel();
+            model.Class = _studentRepository.GetComboClasses();
+            return View(model);
         }
 
         [HttpPost]
@@ -278,7 +336,14 @@ namespace SchoolManagement.Web.Controllers
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
 
-                if(user == null)
+                var path = string.Empty;
+
+                if (model.Photo != null && model.Photo.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(model.Photo, "Photos");
+                }
+
+                if (user == null)
                 {
                     user = new User
                     {
@@ -292,11 +357,24 @@ namespace SchoolManagement.Web.Controllers
                         Email = model.Username,
                         Phone = model.Phone,
                         UserName = model.Username,
-                        Status = model.Status
+                        Status = model.Status,
+                        ImageUrl = path
                     };
-                        
+
                     var result = await _userHelper.AddUserAsync(user, model.Password);
-                    if(result != IdentityResult.Success)
+                    await _userHelper.AddUserToRoleAsync(user, model.Status, string.Empty);
+
+                    if (user.Status == "Aluno")
+                    {
+                        var student = new Student
+                        {
+                            UserId = user.Id,
+                            ClassId = model.ClassId
+                        };
+                        await _studentRepository.CreateAsync(student);
+                    }
+
+                    if (result != IdentityResult.Success)
                     {
                         this.ModelState.AddModelError(string.Empty, "O utilizador não pode ser criado");
                         return this.View(model);

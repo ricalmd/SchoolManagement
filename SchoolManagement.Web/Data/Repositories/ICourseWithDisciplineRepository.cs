@@ -7,12 +7,12 @@ namespace SchoolManagement.Web.Data.Repositories
 {
     public interface ICourseWithDisciplineRepository : IGenericRepository<CourseWithDiscipline>
     { 
-        Task<int> DeleteCwdAsync(CourseWithDiscipline courseWithDiscipline);
+        Task DeleteCwdAsync(CourseWithDiscipline courseWithDiscipline);
 
         IQueryable<CourseWithDiscipline> GetByCourseId(int id);
 
         IQueryable<CourseWithDiscipline> GetCwdAsync(int courseId, int disciplineId);
 
-        CourseWithDiscipline ToAddCourseWithDisciplines(int id, User user, AddDisciplinesViewModel model);
+        CourseWithDiscipline ToAddCourseWithDisciplines(Course course, User user, int disciplineId);
     }
 }

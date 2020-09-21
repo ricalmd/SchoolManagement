@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using SchoolManagement.Web.Data.Entities;
-using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Data.Repositories
 {
@@ -14,36 +13,33 @@ namespace SchoolManagement.Web.Data.Repositories
             _context = context;
         }
 
-        public async Task<int> DeleteCwdAsync(CourseWithDiscipline courseWithDiscipline)
+        public async Task DeleteCwdAsync(CourseWithDiscipline courseWithDiscipline)
         {
-            if (courseWithDiscipline == null)
+            if (courseWithDiscipline != null)
             {
-                return 0;
+                _context.CourseWithDisciplines.Remove(courseWithDiscipline);
+                await _context.SaveChangesAsync();
             }
-
-            _context.CourseWithDisciplines.Remove(courseWithDiscipline);
-            await _context.SaveChangesAsync();
-            return courseWithDiscipline.CourseId;
         }
 
         public IQueryable<CourseWithDiscipline> GetByCourseId(int id)
         {
-            return _context.CourseWithDisciplines.Where(c => c.CourseId == id);
+            return _context.CourseWithDisciplines.Where(c => c.Course.Id == id);
         }
 
         public IQueryable<CourseWithDiscipline> GetCwdAsync(int courseId, int disciplineId)
         {
             return _context.CourseWithDisciplines
-                .Where(c => c.DisciplineId.Equals(disciplineId) && c.CourseId.Equals(courseId));
+                .Where(c => c.Discipline.Id.Equals(disciplineId) && c.Course.Id.Equals(courseId));
         }
 
-        public CourseWithDiscipline ToAddCourseWithDisciplines(int id, User user, AddDisciplinesViewModel model)
+        public CourseWithDiscipline ToAddCourseWithDisciplines(Course course, User user, int disciplineId)
         {
             return new CourseWithDiscipline
             {
-                CourseId = id,
+                Course = course,
                 User = user,
-                DisciplineId = model.DisciplineId
+                DisciplineId = disciplineId
             };
         }
     }

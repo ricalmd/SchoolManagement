@@ -46,5 +46,8 @@ namespace SchoolManagement.Web.Data.Entities
 
         [Required]
         public string Status { get; set; }
+
+        [Display(Name = "Fotografia")]
+        public string ImageUrl { get; set; }
     }
 }

@@ -1,0 +1,32 @@
+﻿<environment include="Development">
+    <script>
+        function showClasses(value) {
+            let s = value;
+
+            if (s === "Aluno") {
+                document.getElementById('hidden').style.visibility = "visible";
+                document.getElementById('hidden').style.height = "70px";
+            }
+            else {
+                document.getElementById('hidden').style.visibility = "hidden";
+                document.getElementById('hidden').style.height = "1px";
+            }
+        }
+    </script>
+</environment>
+<environment exclude="Development">
+    <script>
+        function showClasses(value) {
+            let s = value;
+
+            if (s === "Aluno") {
+                document.getElementById('hidden').style.visibility = "visible";
+                document.getElementById('hidden').style.height = "70px";
+            }
+            else {
+                document.getElementById('hidden').style.visibility = "hidden";
+                document.getElementById('hidden').style.height = "1px";
+            }
+        }
+    </script>
+</environment>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 
@@ -14,9 +15,28 @@ namespace SchoolManagement.Web.Data
 
         public DbSet<Class> Classes { get; set; }
 
+        public DbSet<Student> Students { get; set; }
+
+        public DbSet<Classification> Classifications { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            var cascadeFKs = modelBuilder.Model
+                .GetEntityTypes()
+                .SelectMany(t => t.GetForeignKeys())
+                .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+            foreach (var fk in cascadeFKs)
+            {
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

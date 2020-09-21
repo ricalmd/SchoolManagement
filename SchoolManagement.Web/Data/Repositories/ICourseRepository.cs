@@ -15,7 +15,7 @@ namespace SchoolManagement.Web.Data.Repositories
 
         Course GetAllWithCourse(int id);
 
-        IEnumerable<SelectListItem> GetComboSubjects();
+        IEnumerable<SelectListItem> GetComboDisciplines();
 
         Task<Course> GetCourseAsync(int id);
 

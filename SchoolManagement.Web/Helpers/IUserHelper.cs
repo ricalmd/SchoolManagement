@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,7 +12,7 @@ namespace SchoolManagement.Web.Helpers
     {
         Task<IdentityResult> AddUserAsync(User user, string password);
 
-        Task AddUserToRoleAsync(User user, string roleName);
+        Task AddUserToRoleAsync(User user, string roleName, string outdatedRole);
 
         Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
 
@@ -22,6 +23,8 @@ namespace SchoolManagement.Web.Helpers
         Task<string> GenerateEmailConfirmationTokenAsyc(User user);
 
         Task<string> GeneratePasswordResetTokenAsync(User user);
+
+        IQueryable<User> GetAllUsers();
 
         IEnumerable<SelectListItem> GetComboUsers();
 
