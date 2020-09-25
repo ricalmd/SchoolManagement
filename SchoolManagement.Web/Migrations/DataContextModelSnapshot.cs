@@ -161,13 +161,13 @@ namespace SchoolManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("DisciplineId");
+                    b.Property<int>("DisciplineId");
 
                     b.Property<int>("JustifiedAbsence");
 
                     b.Property<int>("Score");
 
-                    b.Property<int?>("StudentId");
+                    b.Property<int>("StudentId");
 
                     b.Property<int>("UnjustifiedAbsence");
 
@@ -283,6 +283,25 @@ namespace SchoolManagement.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Teacher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DisciplineId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DisciplineId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("SchoolManagement.Web.Data.Entities.User", b =>
@@ -428,11 +447,13 @@ namespace SchoolManagement.Migrations
                 {
                     b.HasOne("SchoolManagement.Web.Data.Entities.Discipline", "Discipline")
                         .WithMany()
-                        .HasForeignKey("DisciplineId");
+                        .HasForeignKey("DisciplineId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SchoolManagement.Web.Data.Entities.Student", "Student")
                         .WithMany()
-                        .HasForeignKey("StudentId");
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Course", b =>
@@ -471,6 +492,18 @@ namespace SchoolManagement.Migrations
                     b.HasOne("SchoolManagement.Web.Data.Entities.Class", "Class")
                         .WithMany()
                         .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("SchoolManagement.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("SchoolManagement.Web.Data.Entities.Teacher", b =>
+                {
+                    b.HasOne("SchoolManagement.Web.Data.Entities.Discipline", "Discipline")
+                        .WithMany()
+                        .HasForeignKey("DisciplineId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SchoolManagement.Web.Data.Entities.User", "User")

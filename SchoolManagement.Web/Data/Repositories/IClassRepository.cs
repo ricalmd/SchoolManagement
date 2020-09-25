@@ -9,6 +9,10 @@ namespace SchoolManagement.Web.Data.Repositories
     {
         IQueryable GetAllWithUsers();
 
+        List<Class> GetClassesFromTeacher(string id);
+
+        List<Class> GetClassesFromUser(string id);
+
         IEnumerable<SelectListItem> GetComboCourses();
     }
 }

@@ -20,6 +20,29 @@ namespace SchoolManagement.Web.Data.Repositories
             return _context.Classes.Include(c => c.User);
         }
 
+        public List<Class> GetClassesFromTeacher(string id)
+        {
+            return (from c in _context.Classes
+                    join co in _context.Courses on c.CourseId equals co.Id
+                    join cd in _context.CourseWithDisciplines on co.Id equals cd.Course.Id
+                    join d in _context.Disciplines on cd.DisciplineId equals d.Id
+                    join t in _context.Teachers on d.Id equals t.DisciplineId
+                    join u in _context.Users on t.User.Id equals u.Id
+                    where u.Id == id
+                    select c).Distinct().ToList();
+        }
+
+        public List<Class> GetClassesFromUser(string id)
+        {
+            return _context.Users
+                .Where(u => u.Id.Equals(id))
+                .Join(_context.Students, u => u.Id, s => s.UserId,
+                (s, u) => new { students = s, users = u })
+                .Join(_context.Classes, s => s.users.ClassId, c => c.Id,
+                (c, s) => new { classes = c, students = s })
+                .Select(x => x.students).ToList();
+        }
+
         public IEnumerable<SelectListItem> GetComboCourses()
         {
             var list = _context.Courses.Select(c => new SelectListItem

@@ -1,0 +1,53 @@
+﻿@model SchoolManagement.Web.Models.ChangeElementViewModel
+
+@{
+    ViewData["Title"] = "ChangeElement";
+}
+
+<h2>ChangeElement</h2>
+
+<h4>ChangeElementViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ChangeElement">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EmailId" class="control-label"></label>
+                <select asp-for="EmailId" asp-items="Model.Email" class="form-control"></select>
+                <span asp-validation-for="EmailId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status">Tipo de Utilizador</label>
+                <input onclick="showClasses('Admin')" type="radio" value="Administrativo" asp-for="Status" />Administrativo
+                <input onclick="showClasses('Formador')" type="radio" value="Formador" asp-for="Status" />Formador
+                <input onclick="showClasses('Aluno')" type="radio" value="Aluno" asp-for="Status" />Aluno
+                <span asp-validation-for="Status" class="text-warning"></span>
+            </div>
+            <div id="hidden" style="visibility: hidden; height: 1px">
+                <div class="form-group">
+                    <label asp-for="ClassId" class="control-label"></label>
+                    <select asp-for="ClassId" asp-items="Model.Class" class="form-control"></select>
+                    <span asp-validation-for="ClassId" class="text-danger"></span>
+                </div>
+            </div>
+            <div id="hiddenTeacher" style="visibility: hidden; height: 1px">
+                <div class="form-group">
+                    <label asp-for="DisciplineId" class="control-label"></label>
+                    <select asp-for="DisciplineId" asp-items="Model.Discipline" class="form-control"></select>
+                    <span asp-validation-for="DisciplineId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <a asp-action="ChangeUser" class="btn btn-primary">Voltar</a>
+            </div>
+            <div class="text-success">@ViewBag.UserMessage</div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_DisplayClassesMenuPartial");}
+}

@@ -71,11 +71,6 @@ namespace SchoolManagement.Web.Helpers
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
-        public IQueryable<User> GetAllUsers()
-        {
-            return _userManager.Users.Select(u => u);
-        }
-
         public IEnumerable<SelectListItem> GetComboUsers()
         {
             var list = _userManager.Users.Select(u => new SelectListItem

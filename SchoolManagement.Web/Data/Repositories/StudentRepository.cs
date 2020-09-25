@@ -20,7 +20,15 @@ namespace SchoolManagement.Web.Data.Repositories
         {
             if (student != null)
             {
+                var items = _context.Classifications.Where(c => c.StudentId == student.Id);
+
                 _context.Students.Remove(student);
+
+                foreach (var item in items)
+                {
+                    _context.Classifications.Remove(item);
+                }
+
                 await _context.SaveChangesAsync();
             }
         }
@@ -42,25 +50,21 @@ namespace SchoolManagement.Web.Data.Repositories
             return list;
         }
 
-        public List<User> GetStudents(
-            IQueryable<Class> classes, 
-            IQueryable<Student> students,
-            IQueryable<User> users, 
-            int itemClass)
+        public List<User> GetStudents(int itemClass)
         {
-            return students
+            return _context.Students
                 .Where(s => s.ClassId.Equals(itemClass))
-                .Join(classes, s => s.ClassId, c => c.Id,
+                .Join(_context.Classes, s => s.ClassId, c => c.Id,
                 (s, c) => new { students = s, classes = c })
-                .Join(users, s => s.students.User.Id, u => u.Id,
+                .Join(_context.Users, s => s.students.User.Id, u => u.Id,
                 (s, u) => new { students = s, users = u }).AsNoTracking()
                 .Select(x => x.users).ToList();
         }
 
-        public IQueryable<Student> GetStudentAsync(int classId, string userId)
+        public Student GetStudent(int classId, string userId)
         {
             return _context.Students
-                .Where(u => u.User.Id.Equals(userId) && u.Class.Id.Equals(classId));
+                .Where(u => u.User.Id.Equals(userId) && u.Class.Id.Equals(classId)).FirstOrDefault();
         }
     }
 }

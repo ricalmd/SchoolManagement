@@ -46,11 +46,7 @@ namespace SchoolManagement.Web.Controllers
 
             var course = await _courseRepository.GetByIdAsync(id.Value);
 
-            var courses = _courseRepository.GetAll();
-            var cwd = _courseWithDisciplineRepository.GetAll();
-            var list = _disciplineRepository.GetAll();
-
-            var result = _disciplineRepository.GetDisciplines(courses, cwd, list, id.Value);
+            var result = _disciplineRepository.GetDisciplines(id.Value);
 
             var model = _courseRepository.CourseAndDisciplines(course, result);
 

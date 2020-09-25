@@ -13,13 +13,6 @@ namespace SchoolManagement.Web.Models
         [Display(Name = "Email")]
         public string Username { get; set; }
 
-        [Required]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare("Password")]
-        public string Confirm { get; set; }
-
         public int ClassId { get; set; }
 
         [Display(Name = "Lista de turmas")]

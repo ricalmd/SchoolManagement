@@ -21,24 +21,30 @@ namespace SchoolManagement.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
         private readonly IStudentRepository _studentRepository;
-        private readonly IClassRepository _classRepository;
+        private readonly IDisciplineRepository _disciplineRepository;
+        private readonly ICourseRepository _courseRepository;
         private readonly IImageHelper _imageHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IRegisterHelper _registerHelper;
 
         public AccountController(
             IUserHelper userHelper,
             IConfiguration configuration,
             IStudentRepository studentRepository,
-            IClassRepository classRepository,
+            IDisciplineRepository disciplineRepository,
+            ICourseRepository courseRepository,
             IImageHelper imageHelper,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            IRegisterHelper registerHelper)
         {
             _userHelper = userHelper;
             _configuration = configuration;
             _studentRepository = studentRepository;
-            _classRepository = classRepository;
+            _disciplineRepository = disciplineRepository;
+            _courseRepository = courseRepository;
             _imageHelper = imageHelper;
             _mailHelper = mailHelper;
+            _registerHelper = registerHelper;
         }
 
         /// <summary>
@@ -86,49 +92,55 @@ namespace SchoolManagement.Web.Controllers
             return this.View(model);
         }
 
-        public IActionResult ChangeStatus()
+        public IActionResult ChangeElement()
         {
-            var model = new ChangeStatusViewModel();
+            var model = new ChangeElementViewModel();
             model.Email = _userHelper.GetComboUsers();
             model.Class = _studentRepository.GetComboClasses();
+            model.Discipline = _courseRepository.GetComboDisciplines();
 
             return this.View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeStatus(ChangeStatusViewModel model)
+        public async Task<IActionResult> ChangeElement(ChangeElementViewModel model)
         {
             if (this.ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByIdAsync(model.EmailId);
-                await _userHelper.AddUserToRoleAsync(user, model.Status, user.Status);
-
-                if (user.Status == "Aluno")
-                {
-                    var student = new Student
-                    {
-                        UserId = user.Id,
-                        ClassId = model.ClassId
-                    };
-                    await _studentRepository.CreateAsync(student);
-                }
 
                 if (user != null)
                 {
-                    user.Status = model.Status;
-
-                    var response = await _userHelper.UpdateUserAsync(user);
-                    if (response.Succeeded)
+                    if (user.Status == model.Status)
                     {
-                        this.ViewBag.UserMessage = "Utilizador atualizado";
+                        if (user.Status == "Aluno")
+                        {
+                            var id = model.ClassId;
+                            await _registerHelper.AddStudentAsync(user, id);
+                        }
+
+                        if (user.Status == "Formador")
+                        {
+                            var idDis = model.DisciplineId;
+                            await _registerHelper.AddTeacherAsync(user, idDis);
+                        }
+
+                        var response = await _userHelper.UpdateUserAsync(user);
+                        if (response.Succeeded)
+                        {
+                            this.ViewBag.UserMessage = "Utilizador atualizado";
+                            _mailHelper.SendMail(user.UserName, "Informação", $"<h1>O tipo de utilizador foi alterado para" +
+                            $" {model.Status}</h1>");
+                        }
+                        else
+                        {
+                            this.ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                        }
                     }
                     else
                     {
-                        this.ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                        this.ModelState.AddModelError(string.Empty, "Tipo de utilizador incorrecto. Verifique o mesmo");
                     }
-
-                    _mailHelper.SendMail(user.UserName, "Informação", $"<h1>O tipo de utilizador foi alterado para" +
-                        $" {model.Status}</h1>");
                 }
                 else
                 {
@@ -142,7 +154,7 @@ namespace SchoolManagement.Web.Controllers
         public async Task<IActionResult> ChangeUser()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            var model = new ChangeUserViewModel(); 
+            var model = new ChangeUserViewModel();
 
             if (user != null)
             {
@@ -160,7 +172,8 @@ namespace SchoolManagement.Web.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name); 
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
                 if (user != null)
                 {
                     user.Name = model.Name;
@@ -360,18 +373,16 @@ namespace SchoolManagement.Web.Controllers
                         Status = model.Status,
                         ImageUrl = path
                     };
+                    Random random = new Random();
+                    var pass = random.Next(100000, 999999).ToString();
 
-                    var result = await _userHelper.AddUserAsync(user, model.Password);
+                    var result = await _userHelper.AddUserAsync(user, pass);
                     await _userHelper.AddUserToRoleAsync(user, model.Status, string.Empty);
-
+                    
                     if (user.Status == "Aluno")
                     {
-                        var student = new Student
-                        {
-                            UserId = user.Id,
-                            ClassId = model.ClassId
-                        };
-                        await _studentRepository.CreateAsync(student);
+                        var id = model.ClassId;
+                        await _registerHelper.AddStudentAsync(user, id);
                     }
 
                     if (result != IdentityResult.Success)
@@ -387,9 +398,9 @@ namespace SchoolManagement.Web.Controllers
                     }, protocol: HttpContext.Request.Scheme);
 
                     _mailHelper.SendMail(model.Username, "Email de confirmação", $"<h1>Email de confirmação</h1>" +
-                        $"Para confirmar a abertura de conta, " +
-                        $"favor de abrir este link:</br></br><a href = \"{tokenLink}\">Confirmar email</a>");
-                    this.ViewBag.Message = "As instruções para completar a abertura de conta, foram enviadas por email.";
+                        $"Para confirmar a abertura de conta, é " +
+                        $"favor de abrir este link: </br></br><a href = \"{tokenLink}\">Confirmar email</a>. </br>" +
+                        $"É aconselhada a alteração da password. Password provisória: {pass}.");
                     
                     return this.View(model);
                 }

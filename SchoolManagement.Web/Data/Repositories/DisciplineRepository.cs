@@ -14,21 +14,50 @@ namespace SchoolManagement.Web.Data.Repositories
             _context = context;
         }
 
+        public List<Discipline> GetAllDisciplines()
+        {
+            return _context.Disciplines.Select(d => d).ToList();
+        }
+
         public IQueryable GetAllWithUsers()
         {
             return _context.Disciplines.Include(d => d.User);
         }
 
-        public List<Discipline> GetDisciplines(
-            IQueryable<Course> courses, IQueryable<CourseWithDiscipline> cwd, IQueryable<Discipline> list, int id)
+        public List<Discipline> GetDisciplines(int id)
         {
-            return cwd
+            return _context.CourseWithDisciplines
                 .Where(cd => cd.Course.Id.Equals(id))
-                .Join(courses, cd => cd.Course.Id, c => c.Id,
+                .Join(_context.Courses, cd => cd.Course.Id, c => c.Id,
                 (cd, c) => new { cwd = cd, courses = c })
-                .Join(list, cd => cd.cwd.DisciplineId, d => d.Id,
+                .Join(_context.Disciplines, cd => cd.cwd.DisciplineId, d => d.Id,
                 (cd, d) => new { cwd = cd, list = d }).AsNoTracking()
                 .Select(x => x.list).ToList();
+        }
+
+        public List<Discipline> GetDisciplinesFromClass(int id)
+        {
+            return _context.Classes
+                .Where(cl => cl.Id.Equals(id))
+                .Join(_context.Courses, cl => cl.CourseId, c => c.Id,
+                (cl, c) => new { classes = cl, courses = c })
+                .Join(_context.CourseWithDisciplines, c => c.courses.Id, cd => cd.Course.Id,
+                (cd, c) => new { cwd = cd, courses = c })
+                .Join(_context.Disciplines, cd => cd.courses.DisciplineId, d => d.Id,
+                (d, cd) => new { disciplines = d, cwd = cd })
+                .Select(x => x.cwd).ToList();
+        }
+
+        public List<Discipline> GetDisciplinesFromTeacher(string id, int disciplineId)
+        {
+            return (from c in _context.Classes
+                    join co in _context.Courses on c.CourseId equals co.Id
+                    join cd in _context.CourseWithDisciplines on co.Id equals cd.Course.Id
+                    join d in _context.Disciplines on cd.DisciplineId equals d.Id
+                    join t in _context.Teachers on d.Id equals t.DisciplineId
+                    join u in _context.Users on t.User.Id equals u.Id
+                    where u.Id == id && c.Id == disciplineId
+                    select d).ToList();
         }
     }
 }

@@ -47,11 +47,7 @@ namespace SchoolManagement.Web.Controllers
             var itemClass = await _classRepository.GetByIdAsync(id.Value);
             itemClass.Course = _courseRepository.GetAllWithCourse(itemClass.CourseId);
 
-            var users = _userHelper.GetAllUsers();
-            var students = _studentRepository.GetAll();
-            var classes = _classRepository.GetAll();
-            
-            var selected = _studentRepository.GetStudents(classes, students, users, itemClass.Id);
+            var selected = _studentRepository.GetStudents(itemClass.Id);
 
             if (itemClass == null)
             {
@@ -186,20 +182,20 @@ namespace SchoolManagement.Web.Controllers
 
         [HttpPost, ActionName("Details")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteCwd(int? id, string userId)
+        public async Task<IActionResult> DeleteStudent(int? id, string userId)
         {
             if (id == null || userId == null)
             {
                 return NotFound();
             }
 
-            var cwd = _studentRepository.GetStudentAsync(id.Value, userId).FirstOrDefault();
-            if (cwd == null)
+            var std = _studentRepository.GetStudent(id.Value, userId);
+            if (std == null)
             {
                 return NotFound();
             }
 
-            await _studentRepository.DeleteStudentAsync(cwd);
+            await _studentRepository.DeleteStudentAsync(std);
             return this.RedirectToAction($"Details/{id}");
         }
     }

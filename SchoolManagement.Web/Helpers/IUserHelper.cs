@@ -24,8 +24,6 @@ namespace SchoolManagement.Web.Helpers
 
         Task<string> GeneratePasswordResetTokenAsync(User user);
 
-        IQueryable<User> GetAllUsers();
-
         IEnumerable<SelectListItem> GetComboUsers();
 
         Task<User> GetUserByEmailAsync(string email);

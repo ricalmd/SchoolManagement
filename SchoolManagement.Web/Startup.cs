@@ -70,6 +70,8 @@ namespace SchoolManagement.Web
             services.AddScoped<IClassRepository, ClassRepository>();
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IClassificationRepository, ClassificationRepository>();
+            services.AddScoped<IRegisterHelper, RegisterHelper>();
+            services.AddScoped<ITeacherRepository, TeacherRepository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

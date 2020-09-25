@@ -19,6 +19,8 @@ namespace SchoolManagement.Web.Data
 
         public DbSet<Classification> Classifications { get; set; }
 
+        public DbSet<Teacher> Teachers { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 

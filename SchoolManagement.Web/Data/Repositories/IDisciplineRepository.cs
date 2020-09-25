@@ -6,8 +6,14 @@ namespace SchoolManagement.Web.Data.Repositories
 {
     public interface IDisciplineRepository : IGenericRepository<Discipline>
     {
+        List<Discipline> GetAllDisciplines();
+
         IQueryable GetAllWithUsers();
 
-        List<Discipline> GetDisciplines(IQueryable<Course> courses, IQueryable<CourseWithDiscipline> cwd, IQueryable<Discipline> list, int id);
+        List<Discipline> GetDisciplines(int id);
+
+        List<Discipline> GetDisciplinesFromClass(int id);
+
+        List<Discipline> GetDisciplinesFromTeacher(string id, int disciplineId);
     }
 }

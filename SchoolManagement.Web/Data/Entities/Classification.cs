@@ -10,6 +10,10 @@
 
         public int UnjustifiedAbsence { get; set; }
 
+        public int StudentId { get; set; }
+
+        public int DisciplineId { get; set; }
+
         public Student Student { get; set; }
 
         public Discipline Discipline { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SchoolManagement.Web.Data.Entities;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Data.Repositories
 {
@@ -13,33 +14,42 @@ namespace SchoolManagement.Web.Data.Repositories
             _context = context;
         }
 
-        public List<Classification> GetClassification(
-            IQueryable<Student> students, 
-            IQueryable<CourseWithDiscipline> cwd, 
-            IQueryable<Discipline> disciplines,
-            IQueryable<User> users,
-            IQueryable<Class> classes,
-            IQueryable<Course> courses,
-            IQueryable<Classification> classifications,
-            string id)
+        public List<UsersAndClassificationViewModel> GetClassification(string id, int classId)
         {
-            return users
-                .Where(u => u.Id.Equals(id))
-                .Join(students, u => u.Id, s => s.UserId,
-                (u, s) => new { users = u, students = s })
-                .Join(classes, s => s.students.ClassId, c => c.Id,
-                (s, c) => new { students = s, classes = c })
-                .Join(courses, c => c.classes.CourseId, co => co.Id,
-                (c, co) => new { classes = c, courses = co })
-                .Join(cwd, co => co.courses.Id, cd => cd.Course.Id,
-                (co, cd) => new { courses = co, cwd = cd })
-                .Join(disciplines, cd => cd.cwd.DisciplineId, d => d.Id,
-                (d, cd) => new { disciplines = d, cwd = cd })
-                .Join(classifications, d => d.disciplines.cwd.Discipline.Id, cl => cl.Discipline.Id,
-                (d, cl) => new { disciplines = d, cl = classifications })
-                .Join(classifications, s => s.disciplines.disciplines.courses.classes.students.students.Id, cl => cl.Student.Id,
-                (s, cl) => new { students = s, classifications = cl })
-                .Select(x => x.classifications).ToList();
+            return (from u in _context.Users
+                    join s in _context.Students on u.Id equals s.User.Id
+                    join c in _context.Classes on s.Class.Id equals c.Id
+                    join co in _context.Courses on c.CourseId equals co.Id
+                    join cd in _context.CourseWithDisciplines on co.Id equals cd.Course.Id
+                    join d in _context.Disciplines on cd.DisciplineId equals d.Id
+                    join cl in _context.Classifications on new { a = d.Id, b = s.Id } equals new { a = cl.DisciplineId, b = cl.StudentId }
+                    where u.Id == id && c.Id == classId
+                    select new UsersAndClassificationViewModel 
+                    {
+                        Score = cl.Score,
+                        JustifiedAbsence = cl.JustifiedAbsence,
+                        User = u,
+                        UnjustifiedAbsence = cl.UnjustifiedAbsence,
+                        Discipline = d
+                    }).ToList(); 
+        }
+
+        public List<UsersAndClassificationViewModel> GetClassificationsFromClass(int classId, int disciplineId)
+        {
+            return (from u in _context.Users
+                    join s in _context.Students on u.Id equals s.User.Id
+                    join c in _context.Classes on s.ClassId equals c.Id
+                    join cl in _context.Classifications on s.Id equals cl.StudentId
+                    join d in _context.Disciplines on cl.DisciplineId equals d.Id
+                    where c.Id == classId && d.Id == disciplineId
+                    select new UsersAndClassificationViewModel 
+                    { 
+                        Score = cl.Score,
+                        JustifiedAbsence = cl.JustifiedAbsence, 
+                        User = u,
+                        UnjustifiedAbsence = cl.UnjustifiedAbsence,
+                        Id = cl.Id
+                    }).ToList();
         }
     }
-}
+} 

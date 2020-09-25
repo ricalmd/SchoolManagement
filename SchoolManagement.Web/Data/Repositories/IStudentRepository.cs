@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SchoolManagement.Web.Data.Entities;
@@ -12,12 +11,8 @@ namespace SchoolManagement.Web.Data.Repositories
 
         IEnumerable<SelectListItem> GetComboClasses();
 
-        List<User> GetStudents(
-            IQueryable<Class> classes,
-            IQueryable<Student> students,
-            IQueryable<User> users,
-            int itemClass);
+        List<User> GetStudents(int itemClass);
 
-        IQueryable<Student> GetStudentAsync(int classId, string userId);
+        Student GetStudent(int classId, string userId);
     }
 }

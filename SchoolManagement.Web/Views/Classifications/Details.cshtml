@@ -1,4 +1,4 @@
-﻿@model SchoolManagement.Web.Models.ClassificationViewModel
+﻿@model IEnumerable<SchoolManagement.Web.Models.UsersAndClassificationViewModel>
 
 @{
     ViewData["Title"] = "Details";
@@ -6,24 +6,30 @@
 
 <h2>Details</h2>
 
-<div>
-    <h4>ClassificationViewModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.User.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.User.Name)
-        </dd>
-    </dl>
-</div>
-<h4>Pauta</h4>
 <table class="table">
-    <tbody>
-        @foreach (var item in Model.Classifications)
-        {
+    <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JustifiedAbsence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnjustifiedAbsence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Discipline.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Score)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.JustifiedAbsence)
             </td>
@@ -31,13 +37,12 @@
                 @Html.DisplayFor(modelItem => item.UnjustifiedAbsence)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Score)
+                @Html.DisplayFor(modelItem => item.Discipline.Name)
             </td>
         </tr>
-        }
+}
     </tbody>
 </table>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-success">Regressar</a>
 </div>

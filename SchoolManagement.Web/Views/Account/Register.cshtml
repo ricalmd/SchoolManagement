@@ -67,18 +67,6 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Password">Password</label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-warning"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Confirm">Confirmar</label>
-                <input asp-for="Confirm" type="password" class="form-control" />
-                <span asp-validation-for="Confirm" class="text-warning"></span>
-            </div>
-
-            <div class="form-group">
                 <label asp-for="Photo" class="control-label"></label>
                 <input asp-for="Photo" class="form-control" type="file" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
@@ -87,23 +75,23 @@
             <div class="form-group">
                 <label asp-for="Status">Tipo de Utilizador</label>
                 <input onclick="showClasses('Admin')" type="radio" value="Administrativo" asp-for="Status" />Administrativo
-                <input onclick="showClasses('Formador')" type="radio" value="Formador" asp-for="Status" />Formador
+                <input onclick="showClasses('Formador')" id="teacher" type="radio" value="Formador" asp-for="Status" />Formador
                 <input onclick="showClasses('Aluno')" id="student" type="radio" value="Aluno" asp-for="Status" />Aluno
                 <span asp-validation-for="Status" class="text-warning"></span>
             </div>
 
-            <div id="hidden" style="visibility: hidden; height: 1px">
-                <div class="form-group">
-                    <label asp-for="ClassId" class="control-label"></label>
-                    <select asp-for="ClassId" asp-items="Model.Class" class="form-control"></select>
-                    <span asp-validation-for="ClassId" class="text-danger"></span>
+                <div id="hidden" style="visibility: hidden; height: 1px">
+                    <div class="form-group">
+                        <label asp-for="ClassId" class="control-label"></label>
+                        <select asp-for="ClassId" asp-items="Model.Class" class="form-control"></select>
+                        <span asp-validation-for="ClassId" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <input type="submit" value="Registar novo utilizador" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group">
+                    <input type="submit" value="Registar novo utilizador" class="btn btn-primary" />
+                </div>
+</form>
     </div>
 </div>
 

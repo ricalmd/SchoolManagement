@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SchoolManagement.Web.Models.UsersAndClassificationViewModel>
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JustifiedAbsence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnjustifiedAbsence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Score)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JustifiedAbsence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnjustifiedAbsence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Name)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

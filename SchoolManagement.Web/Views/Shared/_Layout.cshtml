@@ -33,9 +33,13 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Aluno"))
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Aluno"))
                     {
-                        <li><a asp-area="" asp-controller="Classifications" asp-action="Details">Classificação</a></li>
+                        <li><a asp-area="" asp-controller="Classifications" asp-action="Index">Classificação</a></li>
+                    }
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Formador"))
+                    {
+                        <li><a asp-area="" asp-controller="Teachers" asp-action="Index">Classificação dos alunos</a></li>
                     }
                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Administrativo"))
                     {
