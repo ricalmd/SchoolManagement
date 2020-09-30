@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Data.Repositories
 {
@@ -17,11 +18,6 @@ namespace SchoolManagement.Web.Data.Repositories
         public List<Discipline> GetAllDisciplines()
         {
             return _context.Disciplines.Select(d => d).ToList();
-        }
-
-        public IQueryable GetAllWithUsers()
-        {
-            return _context.Disciplines.Include(d => d.User);
         }
 
         public List<Discipline> GetDisciplines(int id)
@@ -48,7 +44,7 @@ namespace SchoolManagement.Web.Data.Repositories
                 .Select(x => x.cwd).ToList();
         }
 
-        public List<Discipline> GetDisciplinesFromTeacher(string id, int disciplineId)
+        public List<ClassWithDisciplinesViewModel> GetDisciplinesFromTeacher(string id, int disciplineId)
         {
             return (from c in _context.Classes
                     join co in _context.Courses on c.CourseId equals co.Id
@@ -57,7 +53,18 @@ namespace SchoolManagement.Web.Data.Repositories
                     join t in _context.Teachers on d.Id equals t.DisciplineId
                     join u in _context.Users on t.User.Id equals u.Id
                     where u.Id == id && c.Id == disciplineId
-                    select d).ToList();
+                    select new ClassWithDisciplinesViewModel 
+                    {
+                        Id = d.Id,
+                        Code = d.Code,
+                        Content = d.Content,
+                        Credit = d.Credit,
+                        Name = d.Name,
+                        Objectiv = d.Objectiv,
+                        User = u,
+                        Workload = d.Workload,
+                        ClassId = c.Id
+                    }).ToList();
         }
     }
 }

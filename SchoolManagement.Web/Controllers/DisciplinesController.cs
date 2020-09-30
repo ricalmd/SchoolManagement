@@ -9,7 +9,6 @@ using SchoolManagement.Web.Helpers;
 
 namespace SchoolManagement.Web.Controllers
 {
-    [Authorize(Roles = "Administrativo")]
     public class DisciplinesController : Controller
     {
         private readonly IDisciplineRepository _disciplineRepository;
@@ -23,6 +22,7 @@ namespace SchoolManagement.Web.Controllers
             _userHelper = userHelper;
         }
 
+        [Authorize(Roles = "Administrativo")]
         // GET: Disciplines
         public IActionResult Index()
         {
@@ -46,6 +46,7 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
+        [Authorize(Roles = "Administrativo")]
         // GET: Disciplines/Create
         public IActionResult Create()
         {
@@ -68,6 +69,7 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
+        [Authorize(Roles = "Administrativo")]
         // GET: Disciplines/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -114,6 +116,7 @@ namespace SchoolManagement.Web.Controllers
             return View(discipline);
         }
 
+        [Authorize(Roles = "Administrativo")]
         // GET: Disciplines/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

@@ -33,6 +33,10 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (!this.User.IsInRole("Administrativo"))
+                    {
+                        <li><a asp-area="" asp-controller="Courses" asp-action="Index">Ofertas Formativas</a></li>
+                    }
                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Aluno"))
                     {
                         <li><a asp-area="" asp-controller="Classifications" asp-action="Index">Classificação</a></li>

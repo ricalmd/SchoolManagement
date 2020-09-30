@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SchoolManagement.Web.Data.Entities;
 
 namespace SchoolManagement.Web.Models
 {
@@ -9,6 +10,10 @@ namespace SchoolManagement.Web.Models
         public string EmailId { get; set; }
 
         public IEnumerable<SelectListItem> Email { get; set; }
+
+        public string EmailStudentId { get; set; }
+
+        public List<User> EmailStudents { get; set; }
 
         [Required]
         [Display(Name = "Tipo de Utilizador")]

@@ -10,7 +10,6 @@ using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
-    [Authorize(Roles = "Administrativo")]
     public class CoursesController : Controller
     {
         private readonly ICourseRepository _courseRepository;
@@ -50,7 +49,7 @@ namespace SchoolManagement.Web.Controllers
 
             var model = _courseRepository.CourseAndDisciplines(course, result);
 
-            if (course == null)
+            if (course == null || result == null || model == null)
             {
                 return NotFound();
             }
@@ -58,6 +57,7 @@ namespace SchoolManagement.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrativo")]
         // GET: Courses/Create
         public IActionResult Create()
         {
@@ -80,6 +80,7 @@ namespace SchoolManagement.Web.Controllers
             return View(course);
         }
 
+        [Authorize(Roles = "Administrativo")]
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -91,7 +92,7 @@ namespace SchoolManagement.Web.Controllers
             var course = await _courseRepository.GetByIdAsync(id.Value);
             var model = _courseRepository.ToAddDisciplinesViewModel(course);
             
-            if (course == null)
+            if (course == null || model == null)
             {
                 return NotFound();
             }
@@ -137,6 +138,7 @@ namespace SchoolManagement.Web.Controllers
             return View(course);
         }
 
+        [Authorize(Roles = "Administrativo")]
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -166,6 +168,7 @@ namespace SchoolManagement.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Administrativo")]
         [HttpPost, ActionName("Details")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCwd(int? id, int? disciplineId)

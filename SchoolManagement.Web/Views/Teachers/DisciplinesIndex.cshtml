@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SchoolManagement.Web.Data.Entities.Discipline>
+﻿@model IEnumerable<SchoolManagement.Web.Models.ClassWithDisciplinesViewModel>
 
 @{
     ViewData["Title"] = "DisciplinesIndex";
@@ -58,7 +58,12 @@
                 @Html.DisplayFor(modelItem => item.Content)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Ver</a>
+                @Html.DisplayFor(modelItem => item.ClassId)
+            </td>
+            <td>
+                @{int id = item.Id;}
+                @{int classId = item.ClassId;}
+                <a asp-action="Details" asp-route-id="@id" asp-route-classId="@classId" class="btn btn-primary">Ver pauta</a>
             </td>
         </tr>
 }

@@ -4,6 +4,8 @@
     ViewData["Title"] = "ChangeElement";
 }
 
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 <h2>ChangeElement</h2>
 
 <h4>ChangeElementViewModel</h4>
@@ -11,27 +13,32 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ChangeElement">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EmailId" class="control-label"></label>
-                <select asp-for="EmailId" asp-items="Model.Email" class="form-control"></select>
-                <span asp-validation-for="EmailId" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Status">Tipo de Utilizador</label>
-                <input onclick="showClasses('Admin')" type="radio" value="Administrativo" asp-for="Status" />Administrativo
                 <input onclick="showClasses('Formador')" type="radio" value="Formador" asp-for="Status" />Formador
                 <input onclick="showClasses('Aluno')" type="radio" value="Aluno" asp-for="Status" />Aluno
                 <span asp-validation-for="Status" class="text-warning"></span>
             </div>
-            <div id="hidden" style="visibility: hidden; height: 1px">
+            <div id="hidden" style="display: none;">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label for="tags"></label>
+                    <input id="tags" name="tags" asp-for="EmailStudentId" class="form-control">
+                    <span asp-validation-for="EmailStudentId" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <label asp-for="ClassId" class="control-label"></label>
                     <select asp-for="ClassId" asp-items="Model.Class" class="form-control"></select>
                     <span asp-validation-for="ClassId" class="text-danger"></span>
                 </div>
             </div>
-            <div id="hiddenTeacher" style="visibility: hidden; height: 1px">
+            <div id="hiddenTeacher" style="display: none;">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="EmailId" class="control-label"></label>
+                    <select asp-for="EmailId" asp-items="Model.Email" class="form-control"></select>
+                    <span asp-validation-for="EmailId" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <label asp-for="DisciplineId" class="control-label"></label>
                     <select asp-for="DisciplineId" asp-items="Model.Discipline" class="form-control"></select>
@@ -50,4 +57,25 @@
 @section Scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @{ await Html.RenderPartialAsync("_DisplayClassesMenuPartial");}
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        @if(Model.EmailStudents == null)
+        {
+            return;
+        }
+        @{ int num = 0; }
+        $(function () {
+            var availableTags = [];
+            @foreach (var item in Model.EmailStudents)
+            {
+                @:availableTags.push("@Model.EmailStudents[num].Email");
+                num = num + 1;
+            }
+            $("#tags").autocomplete({
+                source: availableTags
+            });
+        });
+    </script>
 }

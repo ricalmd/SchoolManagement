@@ -1,14 +1,10 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
@@ -96,6 +92,7 @@ namespace SchoolManagement.Web.Controllers
         {
             var model = new ChangeElementViewModel();
             model.Email = _userHelper.GetComboUsers();
+            model.EmailStudents = _userHelper.GetStudents();
             model.Class = _studentRepository.GetComboClasses();
             model.Discipline = _courseRepository.GetComboDisciplines();
 
@@ -109,37 +106,33 @@ namespace SchoolManagement.Web.Controllers
             {
                 var user = await _userHelper.GetUserByIdAsync(model.EmailId);
 
+                if(user == null)
+                {
+                    user = await _userHelper.GetUserByEmailAsync(model.EmailStudentId);
+                }
+
                 if (user != null)
                 {
-                    if (user.Status == model.Status)
+                    if (user.Status == "Aluno")
                     {
-                        if (user.Status == "Aluno")
-                        {
-                            var id = model.ClassId;
-                            await _registerHelper.AddStudentAsync(user, id);
-                        }
+                        var id = model.ClassId;
+                        await _registerHelper.AddStudentAsync(user, id);
+                    }
 
-                        if (user.Status == "Formador")
-                        {
-                            var idDis = model.DisciplineId;
-                            await _registerHelper.AddTeacherAsync(user, idDis);
-                        }
+                    if (user.Status == "Formador")
+                    {
+                        var idDis = model.DisciplineId;
+                        await _registerHelper.AddTeacherAsync(user, idDis);
+                    }
 
-                        var response = await _userHelper.UpdateUserAsync(user);
-                        if (response.Succeeded)
-                        {
-                            this.ViewBag.UserMessage = "Utilizador atualizado";
-                            _mailHelper.SendMail(user.UserName, "Informação", $"<h1>O tipo de utilizador foi alterado para" +
-                            $" {model.Status}</h1>");
-                        }
-                        else
-                        {
-                            this.ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
-                        }
+                    var response = await _userHelper.UpdateUserAsync(user);
+                    if (response.Succeeded)
+                    {
+                        this.ViewBag.UserMessage = "Utilizador atualizado";
                     }
                     else
                     {
-                        this.ModelState.AddModelError(string.Empty, "Tipo de utilizador incorrecto. Verifique o mesmo");
+                        this.ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
                     }
                 }
                 else
@@ -147,7 +140,7 @@ namespace SchoolManagement.Web.Controllers
                     this.ModelState.AddModelError(string.Empty, "Utilizador não encontrado");
                 }
             }
-
+            model.EmailStudents = _userHelper.GetStudents();
             return this.View(model);
         }
 
@@ -220,48 +213,6 @@ namespace SchoolManagement.Web.Controllers
                 return this.NotFound();
             }
             return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
-        {
-            if (this.ModelState.IsValid)
-            {
-                var user = await _userHelper.GetUserByEmailAsync(model.Username);
-                if (user != null)
-                {
-                    var result = await _userHelper.ValidatePasswordAsync(
-                        user,
-                        model.Password);
-
-                    if (result.Succeeded)
-                    {
-                        var claims = new[]
-                        {
-                            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                        };
-
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
-                        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                        var token = new JwtSecurityToken(
-                            _configuration["Tokens:Issuer"],
-                            _configuration["Tokens:Audience"],
-                            claims,
-                            expires: DateTime.UtcNow.AddDays(15),
-                            signingCredentials: credentials);
-                        var results = new
-                        {
-                            token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo
-                        };
-
-                        return this.Created(string.Empty, results);
-                    }
-                }
-            }
-
-            return this.BadRequest();
         }
 
         public IActionResult Login()
@@ -409,7 +360,7 @@ namespace SchoolManagement.Web.Controllers
             return this.View(model);
         }
 
-        public IActionResult ResetPassword(string token)
+        public IActionResult ResetPassword()
         {
             return View();
         }

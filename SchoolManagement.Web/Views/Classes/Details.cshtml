@@ -51,26 +51,55 @@
     </tr>
     @for (var i = 0; i < Model.Users.Count(); i++)
     {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => Model.Users[i].Name)
-    </td>
-    <td>
-        @if (!string.IsNullOrEmpty(Model.Users[i].ImageUrl))
-        {
-            <img src="@Url.Content(Model.Users[i].ImageUrl)" alt="Image" style="width:100px;height:150px;max-width:100%;height:auto" />
-        }
-        @{ string userId = Model.Users[i].Id;}
-            <form asp-action="Details">
-                <input asp-for="Id" class="hidden" />
-                <input asp-for="@userId" class="hidden" />
-                <input type="submit" value="Apagar" class="btn btn-danger" />
-            </form>
-    </td>
-</tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Users[i].Name)
+            </td>
+            <td>
+                @{string nameDiv = $"box{i}";}
+                <div id="@nameDiv" style="background-color: whitesmoke; width: 30%; border: solid black; text-align: center; display: none;">
+                    <h3>ATENÇÃO!</h3>
+                    <h4>Tem mesmo a certeza que quer apagar este registo?</h4>
+                    <h5>Certifique-se que não irá apagar dados importantes.</h5>
+                    @if (!string.IsNullOrEmpty(Model.Users[i].ImageUrl))
+                    {
+                        <img src="@Url.Content(Model.Users[i].ImageUrl)" alt="Image" style="width:100px;height:150px;max-width:100%;height:auto" />
+                    }
+                    @{ string userId = Model.Users[i].Id;}
+                    <form asp-action="Details">
+                        <input asp-for="Id" class="hidden" />
+                        <input asp-for="@userId" class="hidden" />
+                        <input type="submit" value="Apagar" class="btn btn-danger" />
+                    </form>
+                    <br>
+                    @{string name = $"button{i}";}
+                    <input type="button" onclick="hideWarning('@nameDiv', '@name')" value="Cancelar" class="btn btn-primary" />
+                </div>
+                <input id="@name" type="button" onclick="revellWarning('@nameDiv', '@name')" value="Apagar" class="btn btn-primary" />
+            </td>
+        </tr>
     }
 </table>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
     <a asp-action="Index" class="btn btn-success">Regressar</a>
 </div>
+
+@section Scripts {
+<script>
+    function revellWarning(value, name) {
+        let n = value
+        let b = name;
+
+        document.getElementById(n).style.display = "block";
+        document.getElementById(b).style.display = "none";
+    }
+    function hideWarning(value, name) {
+        let n = value
+        let b = name;
+
+        document.getElementById(n).style.display = "none";
+        document.getElementById(b).style.display = "block";
+    }
+</script>
+}

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Models;
 
@@ -36,15 +35,6 @@ namespace SchoolManagement.Web.Data.Repositories
                 Reference = course.Reference,
                 Disciplines = disciplines.ToList()
             };
-        }
-
-        /// <summary>
-        /// Get courses, including users.
-        /// </summary>
-        /// <returns></returns>
-        public IQueryable GetAllWithUsers()
-        {
-            return _context.Courses.Include(c => c.User);
         }
 
         public Course GetAllWithCourse(int id)

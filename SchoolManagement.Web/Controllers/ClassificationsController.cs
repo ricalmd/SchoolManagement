@@ -3,8 +3,6 @@ using System.Linq;
 using SchoolManagement.Web.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Web.Helpers;
-using SchoolManagement.Web.Models;
-using SchoolManagement.Web.Data.Entities;
 
 namespace SchoolManagement.Web.Controllers
 {

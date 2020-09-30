@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
-using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
@@ -33,11 +33,16 @@ namespace SchoolManagement.Web.Controllers
             return View(_classRepository.GetClassesFromTeacher(user.Id));
         }
 
-        public async Task<IActionResult> DisciplinesIndex(Class classItem)
+        public async Task<IActionResult> DisciplinesIndex(int? id)
         {
-            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var model = _disciplineRepository.GetDisciplinesFromTeacher(user.Id, classItem.Id);
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+           
+            var model = _disciplineRepository.GetDisciplinesFromTeacher(user.Id, id.Value);
 
             if (model == null)
             {
@@ -47,14 +52,15 @@ namespace SchoolManagement.Web.Controllers
             return View(model);
         }
 
-        public IActionResult Details(Discipline discipline, int? id)
+        public IActionResult Details(int? id, int? classId)
         {
-            if (id == null)
+            if(id == null || classId == null)
             {
                 return NotFound();
             }
 
-            var model = _classificationRepository.GetClassificationsFromClass(id.Value, discipline.Id);
+            var model = _classificationRepository
+                .GetClassificationsFromClass(classId.Value, id.Value);
 
             if (model == null)
             {
@@ -62,6 +68,39 @@ namespace SchoolManagement.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditStudent(
+            int? clId, int score, int jAbsence, int uAbsence, int studentId, int disciplineId)
+        {
+            var classification = new Classification
+            {
+                Id = clId.Value,
+                DisciplineId = disciplineId,
+                StudentId = studentId,
+                JustifiedAbsence = jAbsence,
+                Score = score,
+                UnjustifiedAbsence = uAbsence
+            };
+
+            try
+            {
+                await _classificationRepository.UpdateAsync(classification);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _classificationRepository.ExistAsync(classification.Id))
+                {
+                   return NotFound();
+                }
+                else
+                {
+                throw;
+                }
+            }
+            return this.RedirectToAction(nameof(Index));
         }
     }
 }

@@ -86,19 +86,29 @@
         <td>
             @Html.DisplayFor(modelItem => Model.Disciplines[i].Code)
         </td>
+        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Administrativo"))
+        {
+            <td>
+                @{ int disciplineId = Convert.ToInt32(Model.Disciplines[i].Id);}
+                <form asp-action="Details">
+                    <input asp-for="Id" class="hidden" />
+                    <input asp-for="@disciplineId" class="hidden" />
+                    <input type="submit" value="Apagar" class="btn btn-danger" />
+                </form>
+            </td>
+        }
         <td>
-            @{ int disciplineId = Convert.ToInt32(Model.Disciplines[i].Id);}
-            <form asp-action="Details">
-                <input asp-for="Id" class="hidden" />
-                <input asp-for="@disciplineId" class="hidden" />
-                <input type="submit" value="Apagar" class="btn btn-danger" />
-            </form>
+            @{ int id = Convert.ToInt32(Model.Disciplines[i].Id);}
+            <a asp-controller="Disciplines" asp-action="Details" asp-route-id="@id" class="btn btn-info">Detalhes</a>
         </td>
     </tr>
         }
     </tbody>
 </table>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Administrativo"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    }
     <a asp-action="Index" class="btn btn-success">Regressar</a>
 </div>

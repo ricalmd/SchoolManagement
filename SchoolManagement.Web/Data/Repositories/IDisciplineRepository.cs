@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SchoolManagement.Web.Data.Entities;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Data.Repositories
 {
@@ -8,12 +8,10 @@ namespace SchoolManagement.Web.Data.Repositories
     {
         List<Discipline> GetAllDisciplines();
 
-        IQueryable GetAllWithUsers();
-
         List<Discipline> GetDisciplines(int id);
 
         List<Discipline> GetDisciplinesFromClass(int id);
 
-        List<Discipline> GetDisciplinesFromTeacher(string id, int disciplineId);
+        List<ClassWithDisciplinesViewModel> GetDisciplinesFromTeacher(string id, int disciplineId);
     }
 }

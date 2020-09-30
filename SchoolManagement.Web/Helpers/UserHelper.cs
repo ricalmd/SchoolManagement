@@ -73,7 +73,9 @@ namespace SchoolManagement.Web.Helpers
 
         public IEnumerable<SelectListItem> GetComboUsers()
         {
-            var list = _userManager.Users.Select(u => new SelectListItem
+            var list = _userManager.Users
+                .Where(u => u.Status.Equals("Formador"))
+                .Select(u => new SelectListItem
             {
                 Text = u.Email,
                 Value = u.Id
@@ -86,6 +88,11 @@ namespace SchoolManagement.Web.Helpers
             });
 
             return list;
+        }
+
+        public List<User> GetStudents()
+        {
+            return _userManager.Users.Where(u => u.Status.Equals("Aluno")).ToList();
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

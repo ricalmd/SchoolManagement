@@ -26,6 +26,8 @@ namespace SchoolManagement.Web.Helpers
 
         IEnumerable<SelectListItem> GetComboUsers();
 
+        List<User> GetStudents();
+
         Task<User> GetUserByEmailAsync(string email);
 
         Task<User> GetUserByIdAsync(string userId);
