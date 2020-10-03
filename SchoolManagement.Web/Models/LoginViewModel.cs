@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using SchoolManagement.Web.Data.Entities;
 
 namespace SchoolManagement.Web.Models
 {
@@ -13,5 +15,7 @@ namespace SchoolManagement.Web.Models
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }
+
+        public List<User> Users { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
@@ -12,17 +13,20 @@ namespace SchoolManagement.Web.Controllers
         private readonly IClassRepository _classRepository;
         private readonly IDisciplineRepository _disciplineRepository;
         private readonly IClassificationRepository _classificationRepository;
+        private readonly ITeacherRepository _teacherRepository;
         private readonly IUserHelper _userHelper;
 
         public TeachersController(
             IClassRepository classRepository, 
             IDisciplineRepository disciplineRepository,
             IClassificationRepository classificationRepository,
+            ITeacherRepository teacherRepository,
             IUserHelper userHelper)
         {
             _classRepository = classRepository;
             _disciplineRepository = disciplineRepository;
             _classificationRepository = classificationRepository;
+            _teacherRepository = teacherRepository;
             _userHelper = userHelper;
         }
 
@@ -101,6 +105,41 @@ namespace SchoolManagement.Web.Controllers
                 }
             }
             return this.RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult TeachersIndex()
+        {
+            return View(_teacherRepository.GetUsersFromTeachers());
+        }
+
+        [Authorize(Roles = "Administrativo")]
+        // GET: Courses/Delete/5
+        public async Task<IActionResult> Delete(int? teacherId)
+        {
+            if (teacherId == null)
+            {
+                return NotFound();
+            }
+
+            var teacher = await _teacherRepository.GetByIdAsync(teacherId.Value);
+
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
+            return View(teacher);
+        }
+
+        // POST: Courses/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int teacherId)
+        {
+            var teacher = await _teacherRepository.GetByIdAsync(teacherId);
+
+            await _teacherRepository.DeleteAsync(teacher);
+            return RedirectToAction("TeachersIndex");
         }
     }
 }

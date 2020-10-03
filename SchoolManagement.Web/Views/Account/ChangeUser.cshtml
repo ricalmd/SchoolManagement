@@ -3,49 +3,58 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>Update User</h2>
+<h2>Tratamento de registos dos utilizadores: opções</h2>
 
 <div class="row">
     <div class="col-md-4 offset-md-4">
         <form method="post">
-            <div asp-validation-summary="ModelOnly"></div>
-
-            <div class="form-group">
-                <label asp-for="Name">Nome</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-warning"></span>
+            <div id="accordion">
+                <div>Atualização dos dados pessoais</div>
+                <div asp-validation-summary="ModelOnly"></div>
+                <div>
+                    <div class="form-group">
+                        <label asp-for="Name">Nome</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-warning"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Address">Morada</label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-warning"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PostalCode">Código Postal</label>
+                        <input asp-for="PostalCode" class="form-control" />
+                        <span asp-validation-for="PostalCode" class="text-warning"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IBAN">IBAN</label>
+                        <input asp-for="IBAN" class="form-control" />
+                        <span asp-validation-for="IBAN" class="text-warning"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Phone">Telefone</label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-warning"></span>
+                    </div>
+                    <input type="submit" value="Atualizar" class="btn btn-primary" />
+                </div>
+                <div>Alteração da password</div>
+                <div>
+                    <a asp-action="ChangePassword" class="btn btn-success">Mudar password</a>
+                </div>
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Administrativo"))
+                    {
+                        <div>Registar novo utilizador</div>
+                        <div>
+                            <a asp-action="Register" class="btn btn-primary">Registar novo utilizador</a>
+                        </div>
+                        <div>Inscrições</div>
+                        <div>
+                            <a asp-action="ChangeElement" class="btn btn-primary">Inscrição de alunos em turmas;<br />atribuição de disciplinas a formadores</a>
+                        </div>
+                    }
             </div>
-            <div class="form-group">
-                <label asp-for="Address">Morada</label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-warning"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PostalCode">Código Postal</label>
-                <input asp-for="PostalCode" class="form-control" />
-                <span asp-validation-for="PostalCode" class="text-warning"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IBAN">IBAN</label>
-                <input asp-for="IBAN" class="form-control" />
-                <span asp-validation-for="IBAN" class="text-warning"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone">Telefone</label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-warning"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Update" class="btn btn-primary" />
-                <a asp-action="ChangePassword" class="btn btn-success">Mudar password</a>
-                @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Administrativo"))
-                {
-                    <a asp-action="Register" class="btn btn-primary">Registar novo utilizador</a>
-                    <a asp-action="ChangeElement" class="btn btn-primary">Alterar tipo de utilizador</a>
-                }
-            </div>
-
             <div class="text-success">@ViewBag.UserMessage</div>
         </form>
     </div>
@@ -53,4 +62,11 @@
 
 @section Scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+  $( function() {
+    $( "#accordion" ).accordion();
+  } );
+    </script>
 }

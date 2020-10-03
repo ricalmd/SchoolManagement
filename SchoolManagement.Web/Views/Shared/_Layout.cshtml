@@ -3,11 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SchoolManagement</title>
+    <title>@ViewData["Title"] - Centro Formativo</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/resources/demos/style.css">  
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
@@ -16,7 +18,7 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
-<body style="background-image: linear-gradient(yellowgreen, #fff);">
+<body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -26,13 +28,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">SchoolManagement</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Centro Formativo</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">Sobre</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contactos</a></li>
                     @if (!this.User.IsInRole("Administrativo"))
                     {
                         <li><a asp-area="" asp-controller="Courses" asp-action="Index">Ofertas Formativas</a></li>
@@ -53,6 +55,7 @@
                                 <li><a asp-area="" asp-controller="Disciplines" asp-action="Index">Gestão das Disciplinas</a></li>
                                 <li><a asp-area="" asp-controller="Courses" asp-action="Index">Gestão dos Cursos</a></li>
                                 <li><a asp-area="" asp-controller="Classes" asp-action="Index">Gestão das Turmas</a></li>
+                                <li><a asp-area="" asp-controller="Teachers" asp-action="TeachersIndex">Rever registos de Professores</a></li>
                             </ul>
                         </li>
                     }
@@ -78,7 +81,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>Ricardo &copy; @DateTime.UtcNow.Year - SchoolManagement</p>
+            <p>Ricardo &copy; @DateTime.UtcNow.Year - Centro Formativo</p>
         </footer>
     </div>
 

@@ -91,8 +91,8 @@ namespace SchoolManagement.Web.Controllers
         public IActionResult ChangeElement()
         {
             var model = new ChangeElementViewModel();
-            model.Email = _userHelper.GetComboUsers();
-            model.EmailStudents = _userHelper.GetStudents();
+            model.EmailTeachers = _userHelper.GetComboUsers();
+            model.EmailStudents = _userHelper.GetComboStudents();
             model.Class = _studentRepository.GetComboClasses();
             model.Discipline = _courseRepository.GetComboDisciplines();
 
@@ -104,11 +104,11 @@ namespace SchoolManagement.Web.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByIdAsync(model.EmailId);
+                var user = await _userHelper.GetUserByIdAsync(model.EmailTeacherId);
 
                 if(user == null)
                 {
-                    user = await _userHelper.GetUserByEmailAsync(model.EmailStudentId);
+                    user = await _userHelper.GetUserByIdAsync(model.EmailStudentId);
                 }
 
                 if (user != null)
@@ -140,7 +140,6 @@ namespace SchoolManagement.Web.Controllers
                     this.ModelState.AddModelError(string.Empty, "Utilizador não encontrado");
                 }
             }
-            model.EmailStudents = _userHelper.GetStudents();
             return this.View(model);
         }
 
@@ -221,8 +220,12 @@ namespace SchoolManagement.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            var model = new LoginViewModel()
+            {
+                Users = _userHelper.GetUsers()
+            };
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -347,7 +350,9 @@ namespace SchoolManagement.Web.Controllers
                         userid = user.Id,
                         token = myToken
                     }, protocol: HttpContext.Request.Scheme);
-
+                    
+                    await _userHelper.LogoutAsync();
+                    
                     _mailHelper.SendMail(model.Username, "Email de confirmação", $"<h1>Email de confirmação</h1>" +
                         $"Para confirmar a abertura de conta, é " +
                         $"favor de abrir este link: </br></br><a href = \"{tokenLink}\">Confirmar email</a>. </br>" +

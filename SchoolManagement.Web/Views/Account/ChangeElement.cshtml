@@ -4,11 +4,9 @@
     ViewData["Title"] = "ChangeElement";
 }
 
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<h2>Atribuição de disciplinas. Inscrição em turmas</h2>
 
-<h2>ChangeElement</h2>
-
-<h4>ChangeElementViewModel</h4>
+<h4>Formulário de inscrições</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -22,8 +20,8 @@
             <div id="hidden" style="display: none;">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label for="tags"></label>
-                    <input id="tags" name="tags" asp-for="EmailStudentId" class="form-control">
+                    <label asp-for="EmailStudentId" class="control-label"></label>
+                    <select asp-for="EmailStudentId" asp-items="Model.EmailStudents" class="form-control"></select>
                     <span asp-validation-for="EmailStudentId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -35,9 +33,9 @@
             <div id="hiddenTeacher" style="display: none;">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="EmailId" class="control-label"></label>
-                    <select asp-for="EmailId" asp-items="Model.Email" class="form-control"></select>
-                    <span asp-validation-for="EmailId" class="text-danger"></span>
+                    <label asp-for="EmailTeacherId" class="control-label"></label>
+                    <select asp-for="EmailTeacherId" asp-items="Model.EmailTeachers" class="form-control"></select>
+                    <span asp-validation-for="EmailTeacherId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="DisciplineId" class="control-label"></label>
@@ -46,7 +44,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Salvar" class="btn btn-default" />
                 <a asp-action="ChangeUser" class="btn btn-primary">Voltar</a>
             </div>
             <div class="text-success">@ViewBag.UserMessage</div>
@@ -57,25 +55,4 @@
 @section Scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @{ await Html.RenderPartialAsync("_DisplayClassesMenuPartial");}
-
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        @if(Model.EmailStudents == null)
-        {
-            return;
-        }
-        @{ int num = 0; }
-        $(function () {
-            var availableTags = [];
-            @foreach (var item in Model.EmailStudents)
-            {
-                @:availableTags.push("@Model.EmailStudents[num].Email");
-                num = num + 1;
-            }
-            $("#tags").autocomplete({
-                source: availableTags
-            });
-        });
-    </script>
 }

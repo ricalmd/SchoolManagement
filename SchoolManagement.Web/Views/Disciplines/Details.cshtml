@@ -4,10 +4,10 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>Detalhes</h2>
 
 <div>
-    <h4>Subject</h4>
+    <h4>Disciplina</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -51,7 +51,6 @@
 @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Administrativo"))
 {
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Index" class="btn btn-success">Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
     </div>
 }

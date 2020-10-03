@@ -83,16 +83,35 @@ namespace SchoolManagement.Web.Helpers
 
             list.Insert(0, new SelectListItem
             {
-                Text = "(Selecionar disciplina)",
+                Text = "(Selecionar email)",
                 Value = "0"
             });
 
             return list;
         }
 
-        public List<User> GetStudents()
+        public IEnumerable<SelectListItem> GetComboStudents()
         {
-            return _userManager.Users.Where(u => u.Status.Equals("Aluno")).ToList();
+            var list = _userManager.Users
+                .Where(u => u.Status.Equals("Aluno"))
+                .Select(u => new SelectListItem
+                {
+                    Text = u.Email,
+                    Value = u.Id
+                }).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Selecionar email)",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+        public List<User> GetUsers()
+        {
+            return _userManager.Users.ToList();
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

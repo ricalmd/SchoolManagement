@@ -18,6 +18,7 @@ namespace SchoolManagement.Web.Models
         [Display(Name = "Lista de turmas")]
         public IEnumerable<SelectListItem> Class { get; set; }
 
+        [Required]
         [Display(Name = "Fotografia")]
         public IFormFile Photo { get; set; }
     }

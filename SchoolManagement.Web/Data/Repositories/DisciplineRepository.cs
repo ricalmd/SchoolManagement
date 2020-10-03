@@ -28,7 +28,7 @@ namespace SchoolManagement.Web.Data.Repositories
                 (cd, c) => new { cwd = cd, courses = c })
                 .Join(_context.Disciplines, cd => cd.cwd.DisciplineId, d => d.Id,
                 (cd, d) => new { cwd = cd, list = d }).AsNoTracking()
-                .Select(x => x.list).ToList();
+                .Select(x => x.list).AsNoTracking().ToList();
         }
 
         public List<Discipline> GetDisciplinesFromClass(int id)
@@ -41,7 +41,7 @@ namespace SchoolManagement.Web.Data.Repositories
                 (cd, c) => new { cwd = cd, courses = c })
                 .Join(_context.Disciplines, cd => cd.courses.DisciplineId, d => d.Id,
                 (d, cd) => new { disciplines = d, cwd = cd })
-                .Select(x => x.cwd).ToList();
+                .Select(x => x.cwd).AsNoTracking().ToList();
         }
 
         public List<ClassWithDisciplinesViewModel> GetDisciplinesFromTeacher(string id, int disciplineId)
@@ -64,7 +64,7 @@ namespace SchoolManagement.Web.Data.Repositories
                         User = u,
                         Workload = d.Workload,
                         ClassId = c.Id
-                    }).ToList();
+                    }).AsNoTracking().ToList();
         }
     }
 }

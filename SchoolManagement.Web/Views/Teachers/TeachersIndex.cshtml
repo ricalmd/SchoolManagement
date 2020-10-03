@@ -1,0 +1,46 @@
+﻿@model IEnumerable<SchoolManagement.Web.Models.TeacherWithDisciplineViewModel>
+
+@{
+    ViewData["Title"] = "TeachersIndex";
+}
+
+<h2>Lista de formadores</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TeacherId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DisciplineName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeacherId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DisciplineName)
+            </td>
+            <td>
+                @{ int teacherId = item.TeacherId;}
+                <form asp-action="Delete">
+                    <input asp-for="@teacherId" class="hidden" />
+                    <input type="submit" value="Apagar" class="btn btn-danger" />
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

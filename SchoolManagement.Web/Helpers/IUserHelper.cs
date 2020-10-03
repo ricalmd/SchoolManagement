@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,7 +25,9 @@ namespace SchoolManagement.Web.Helpers
 
         IEnumerable<SelectListItem> GetComboUsers();
 
-        List<User> GetStudents();
+        IEnumerable<SelectListItem> GetComboStudents();
+
+        List<User> GetUsers();
 
         Task<User> GetUserByEmailAsync(string email);
 
