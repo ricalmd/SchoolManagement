@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
+using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
@@ -77,7 +80,7 @@ namespace SchoolManagement.Web.Controllers
         [HttpPost, ActionName("Details")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditStudent(
-            int? clId, int score, int jAbsence, int uAbsence, int studentId, int disciplineId)
+            int? clId, int score, int jAbsence, int uAbsence, int studentId, int disciplineId, int classId)
         {
             var classification = new Classification
             {
@@ -104,7 +107,7 @@ namespace SchoolManagement.Web.Controllers
                 throw;
                 }
             }
-            return this.RedirectToAction(nameof(Index));
+            return Redirect($"{disciplineId}?classId={classId}");
         }
 
         public IActionResult TeachersIndex()

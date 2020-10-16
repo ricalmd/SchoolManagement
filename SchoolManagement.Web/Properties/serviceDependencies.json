@@ -2,11 +2,7 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql",
-      "connectionId": "cs"
-    },
-    "mssql2": {
-      "type": "mssql",
-      "connectionId": "IGenericRepository"
+      "connectionId": "DefaultConnection"
     }
   }
 }

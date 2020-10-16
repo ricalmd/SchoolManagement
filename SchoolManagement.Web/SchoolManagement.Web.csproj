@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>SchoolManagement.Web</AssemblyName>
     <RootNamespace>SchoolManagement.Web</RootNamespace>
+    <UserSecretsId>1134c2de-83ca-486e-abeb-b69581664cb3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
