@@ -11,7 +11,7 @@ namespace SchoolManagement.Web.Data.Repositories
 
         IQueryable<CourseWithDiscipline> GetByCourseId(int id);
 
-        IQueryable<CourseWithDiscipline> GetCwdAsync(int courseId, int disciplineId);
+        IQueryable<CourseWithDiscipline> GetCwd(int courseId, int disciplineId);
 
         CourseWithDiscipline ToAddCourseWithDisciplines(Course course, User user, int disciplineId);
     }

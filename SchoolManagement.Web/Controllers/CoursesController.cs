@@ -15,17 +15,20 @@ namespace SchoolManagement.Web.Controllers
         private readonly ICourseRepository _courseRepository;
         private readonly ICourseWithDisciplineRepository _courseWithDisciplineRepository;
         private readonly IDisciplineRepository _disciplineRepository;
+        private readonly IClassificationRepository _classificationRepository;
         private readonly IUserHelper _userHelper;
 
         public CoursesController(
             ICourseRepository courseRepository,
             ICourseWithDisciplineRepository courseWithDisciplinesRepository,
             IDisciplineRepository disciplineRepository,
+            IClassificationRepository classificationRepository,
             IUserHelper userHelper)
         {
             _courseRepository = courseRepository;
             _courseWithDisciplineRepository = courseWithDisciplinesRepository;
             _disciplineRepository = disciplineRepository;
+            _classificationRepository = classificationRepository;
             _userHelper = userHelper;
         }
 
@@ -114,10 +117,11 @@ namespace SchoolManagement.Web.Controllers
                     course.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     
                     await _courseRepository.UpdateAsync(course);
-                    
+
+                    var cwdAll = _courseWithDisciplineRepository.GetCwd(course.Id, model.DisciplineId);
                     var cwd = _courseWithDisciplineRepository.ToAddCourseWithDisciplines(course, course.User, model.DisciplineId);
 
-                    if (cwd.DisciplineId != 0)
+                    if (cwd.DisciplineId != 0 && !cwdAll.Any())
                     {
                         await _courseWithDisciplineRepository.CreateAsync(cwd);
                     }
@@ -178,13 +182,23 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
-            var cwd = _courseWithDisciplineRepository.GetCwdAsync(id.Value, disciplineId.Value).FirstOrDefault();
+            var cwd = _courseWithDisciplineRepository.GetCwd(id.Value, disciplineId.Value).FirstOrDefault();
             if (cwd == null)
             {
                 return NotFound();
             }
 
             await _courseWithDisciplineRepository.DeleteCwdAsync(cwd);
+            var elements = _classificationRepository.GetClassificationFromCourse(id.Value, disciplineId.Value);
+
+            if (elements.Any())
+            {
+                foreach(var item in elements)
+                {
+                    await _classificationRepository.DeleteAsync(item);
+                }
+            }
+
             return this.RedirectToAction($"Details/{id}");
         }
     }

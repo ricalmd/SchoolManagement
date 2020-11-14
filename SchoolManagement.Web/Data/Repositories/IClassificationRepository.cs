@@ -9,5 +9,7 @@ namespace SchoolManagement.Web.Data.Repositories
         List<UsersAndClassificationViewModel> GetClassification(string id, int classId);
 
         List<UsersAndClassificationViewModel> GetClassificationsFromClass(int classId, int disciplineId);
+
+        List<Classification> GetClassificationFromCourse(int courseId, int disciplineId);
     }
 }

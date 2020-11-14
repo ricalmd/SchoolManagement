@@ -21,39 +21,39 @@
 
 @foreach (var item in Model)
 {
-    <form asp-action="Details">
-        <div class="flexdivsmax">
-            @Html.DisplayFor(modelItem => item.User.Name)
-        </div>
-        @{int clId = item.Id;}
-        <input type="hidden" asp-for="@clId" />
-        <div class="form-group">
-            @{int score = item.Score;}
-            <input asp-for="@score" class="form-control" />
-            <span asp-validation-for="@score" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            @{int jAbsence = item.JustifiedAbsence;}
-            <input asp-for="@jAbsence" class="form-control" />
-            <span asp-validation-for="@jAbsence" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            @{int uAbsence = item.UnjustifiedAbsence;}
-            <input asp-for="@uAbsence" class="form-control" />
-            <span asp-validation-for="@uAbsence" class="text-danger"></span>
-        </div>
+<form asp-action="Details">
+    <div class="flexdivsmax">
+        @Html.DisplayFor(modelItem => item.User.Name)
+    </div>
+    @{int clId = item.Id;}
+    <input type="hidden" asp-for="@clId" />
+    <div class="form-group">
+        @{int score = item.Score;}
+        <input asp-for="@score" class="form-control" />
+        <span asp-validation-for="@score" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        @{int jAbsence = item.JustifiedAbsence;}
+        <input asp-for="@jAbsence" class="form-control" />
+        <span asp-validation-for="@jAbsence" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        @{int uAbsence = item.UnjustifiedAbsence;}
+        <input asp-for="@uAbsence" class="form-control" />
+        <span asp-validation-for="@uAbsence" class="text-danger"></span>
+    </div>
 
-        @{int studentId = item.StudentId;}
-        <input asp-for="@studentId" class="hidden" />
+    @{int studentId = item.StudentId;}
+    <input asp-for="@studentId" class="hidden" />
 
-        @{int classId = item.Class.Id;}
-        <input asp-for="@classId" class="hidden" />
-        <div class="flexdivsmin">
-            @{int disciplineId = item.DisciplineId;}
-            <input asp-for="@disciplineId" class="hidden" />
-            <input type="submit" value="Atualizar" class="btn btn-success" />
-        </div>
-    </form>
+    @{int classId = item.Class.Id;}
+    <input asp-for="@classId" class="hidden" />
+    <div class="flexdivsmin">
+        @{int disciplineId = item.DisciplineId;}
+        <input asp-for="@disciplineId" class="hidden" />
+        <input type="submit" value="Atualizar" class="btn btn-success" />
+    </div>
+</form>
 }
 <div style="clear:left;"></div>
 

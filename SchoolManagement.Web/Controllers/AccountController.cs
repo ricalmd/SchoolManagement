@@ -365,7 +365,7 @@ namespace SchoolManagement.Web.Controllers
             return this.View(model);
         }
 
-        public IActionResult ResetPassword()
+        public IActionResult ResetPassword(string token)
         {
             return View();
         }

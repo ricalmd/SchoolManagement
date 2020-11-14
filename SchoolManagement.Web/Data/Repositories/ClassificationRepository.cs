@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Models;
 
@@ -54,5 +55,24 @@ namespace SchoolManagement.Web.Data.Repositories
                         Class = c
                     }).ToList();
         }
+
+        public List<Classification> GetClassificationFromCourse(int courseId, int disciplineId)
+        {
+            return (from co in _context.Courses
+                    join c in _context.Classes on co.Id equals c.CourseId
+                    join s in _context.Students on c.Id equals s.ClassId
+                    join cl in _context.Classifications on s.Id equals cl.StudentId
+                    join d in _context.Disciplines on cl.DisciplineId equals d.Id
+                    where d.Id == disciplineId && co.Id == courseId
+                    select new Classification
+                    {
+                        Score = cl.Score,
+                        JustifiedAbsence = cl.JustifiedAbsence,
+                        UnjustifiedAbsence = cl.UnjustifiedAbsence,
+                        Id = cl.Id,
+                        DisciplineId = d.Id,
+                        StudentId = s.Id
+                    }).ToList();
+        }
     }
-} 
+}

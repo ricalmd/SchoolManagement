@@ -27,7 +27,7 @@ namespace SchoolManagement.Web.Data.Repositories
             return _context.CourseWithDisciplines.Where(c => c.Course.Id == id);
         }
 
-        public IQueryable<CourseWithDiscipline> GetCwdAsync(int courseId, int disciplineId)
+        public IQueryable<CourseWithDiscipline> GetCwd(int courseId, int disciplineId)
         {
             return _context.CourseWithDisciplines
                 .Where(c => c.Discipline.Id.Equals(disciplineId) && c.Course.Id.Equals(courseId));

@@ -56,15 +56,17 @@
                 @Html.DisplayFor(modelItem => Model.Users[i].Name)
             </td>
             <td>
+                @if (!string.IsNullOrEmpty(Model.Users[i].ImageUrl))
+                {
+                    <img src="@Url.Content(Model.Users[i].ImageUrl)" alt="Image" style="width:100px;height:150px;max-width:100%;height:auto" />
+                }
+            </td>
+            <td>
                 @{string nameDiv = $"box{i}";}
                 <div id="@nameDiv" style="background-color: whitesmoke; width: 30%; border: solid black; text-align: center; display: none;">
                     <h3>ATENÇÃO!</h3>
                     <h4>Tem mesmo a certeza que quer apagar este registo?</h4>
                     <h5>Certifique-se que não irá apagar dados importantes.</h5>
-                    @if (!string.IsNullOrEmpty(Model.Users[i].ImageUrl))
-                    {
-                        <img src="@Url.Content(Model.Users[i].ImageUrl)" alt="Image" style="width:100px;height:150px;max-width:100%;height:auto" />
-                    }
                     @{ string userId = Model.Users[i].Id;}
                     <form asp-action="Details">
                         <input asp-for="Id" class="hidden" />
