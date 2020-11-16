@@ -64,6 +64,15 @@ namespace SchoolManagement.Web.Data.Repositories
             return await _context.Courses.FindAsync(id);
         }
 
+        public string GetCourseByStudent(int studentId)
+        {
+            return (from c in _context.Classes
+                    join s in _context.Students on c.Id equals s.ClassId
+                    join co in _context.Courses on c.CourseId equals co.Id
+                    where s.Id == studentId
+                    select co.Name).FirstOrDefault();
+        }
+
         public AddDisciplinesViewModel ToAddDisciplinesViewModel(Course course)
         {
             return new AddDisciplinesViewModel

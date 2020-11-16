@@ -120,10 +120,33 @@ namespace SchoolManagement.Web.Controllers
 
                     var cwdAll = _courseWithDisciplineRepository.GetCwd(course.Id, model.DisciplineId);
                     var cwd = _courseWithDisciplineRepository.ToAddCourseWithDisciplines(course, course.User, model.DisciplineId);
+                    var classifications = _classificationRepository.GetClassificationForStudents(course.Id);
 
                     if (cwd.DisciplineId != 0 && !cwdAll.Any())
                     {
                         await _courseWithDisciplineRepository.CreateAsync(cwd);
+
+                        if (classifications.Any())
+                        {
+                            int elemen = 0;
+
+                            foreach (var item in classifications)
+                            {
+                                if (item.StudentId != elemen)
+                                {
+                                    var cl = new Classification
+                                    {
+                                        DisciplineId = model.DisciplineId,
+                                        JustifiedAbsence = 0,
+                                        UnjustifiedAbsence = 0,
+                                        Score = 0,
+                                        StudentId = item.StudentId
+                                    };
+                                    elemen = item.StudentId;
+                                    await _classificationRepository.CreateAsync(cl);
+                                }
+                            }
+                        }
                     }
                 }
                 catch (DbUpdateConcurrencyException)

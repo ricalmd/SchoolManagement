@@ -12,17 +12,20 @@ namespace SchoolManagement.Web.Controllers
         private readonly IClassRepository _classRepository;
         private readonly IDisciplineRepository _disciplineRepository;
         private readonly IUserHelper _userHelper;
+        private readonly ICourseRepository _courseRepository;
 
         public ClassificationsController(
             IClassificationRepository classificationRepository,
             IClassRepository classRepository,
             IDisciplineRepository disciplineRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            ICourseRepository courseRepository)
         {
             _classificationRepository = classificationRepository;
             _classRepository = classRepository;
             _disciplineRepository = disciplineRepository;
             _userHelper = userHelper;
+            _courseRepository = courseRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -48,6 +51,9 @@ namespace SchoolManagement.Web.Controllers
                 return NotFound();
             }
 
+            var course = _courseRepository.GetCourseByStudent(item.First().StudentId);
+
+            ViewBag.Message = course;
             return View(item);
         }
     }

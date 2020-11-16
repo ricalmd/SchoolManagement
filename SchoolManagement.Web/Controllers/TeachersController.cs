@@ -59,7 +59,7 @@ namespace SchoolManagement.Web.Controllers
             return View(model);
         }
 
-        public IActionResult Details(int? id, int? classId)
+        public async Task<IActionResult> Details(int? id, int? classId)
         {
             if(id == null || classId == null)
             {
@@ -73,6 +73,11 @@ namespace SchoolManagement.Web.Controllers
             {
                 return NotFound();
             }
+
+            var itemClass = await _classRepository.GetByIdAsync(classId.Value);
+            var discipline = await _disciplineRepository.GetByIdAsync(id.Value);
+
+            ViewBag.Message = $"Turma: {itemClass.NameClass}. Disciplina: {discipline.Name}";
 
             return View(model);
         }

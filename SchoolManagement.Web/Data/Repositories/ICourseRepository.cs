@@ -16,6 +16,8 @@ namespace SchoolManagement.Web.Data.Repositories
 
         Task<Course> GetCourseAsync(int id);
 
+        string GetCourseByStudent(int studentId);
+
         AddDisciplinesViewModel ToAddDisciplinesViewModel(Course course);
     }
 }

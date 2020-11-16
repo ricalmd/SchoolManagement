@@ -31,7 +31,8 @@ namespace SchoolManagement.Web.Data.Repositories
                         JustifiedAbsence = cl.JustifiedAbsence,
                         User = u,
                         UnjustifiedAbsence = cl.UnjustifiedAbsence,
-                        Discipline = d
+                        Discipline = d,
+                        StudentId = cl.StudentId
                     }).ToList(); 
         }
 
@@ -70,8 +71,21 @@ namespace SchoolManagement.Web.Data.Repositories
                         JustifiedAbsence = cl.JustifiedAbsence,
                         UnjustifiedAbsence = cl.UnjustifiedAbsence,
                         Id = cl.Id,
-                        DisciplineId = d.Id,
-                        StudentId = s.Id
+                        DisciplineId = cl.DisciplineId,
+                        StudentId = cl.StudentId
+                    }).ToList();
+        }
+
+        public List<Classification> GetClassificationForStudents(int courseId)
+        {
+            return (from co in _context.Courses
+                    join c in _context.Classes on co.Id equals c.CourseId
+                    join s in _context.Students on c.Id equals s.ClassId
+                    join cl in _context.Classifications on s.Id equals cl.StudentId
+                    where co.Id == courseId
+                    select new Classification
+                    {
+                        StudentId = cl.StudentId
                     }).ToList();
         }
     }

@@ -17,17 +17,20 @@ namespace SchoolManagement.Web.Controllers
         private readonly ICourseRepository _courseRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IDisciplineRepository _disciplineRepository;
 
         public ClassesController(
             IClassRepository classRepository,
             ICourseRepository courseRepository,
             IStudentRepository studentRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IDisciplineRepository disciplineRepository)
         {
             _classRepository = classRepository;
             _courseRepository = courseRepository;
             _studentRepository = studentRepository;
             _userHelper = userHelper;
+            _disciplineRepository = disciplineRepository;
         }
 
         // GET: Classes
@@ -48,6 +51,7 @@ namespace SchoolManagement.Web.Controllers
             itemClass.Course = _courseRepository.GetAllWithCourse(itemClass.CourseId);
 
             var selected = _studentRepository.GetStudents(itemClass.Id);
+            var disciplines = _disciplineRepository.GetDisciplines(itemClass.CourseId);
 
             if (itemClass == null)
             {
@@ -61,7 +65,8 @@ namespace SchoolManagement.Web.Controllers
                 BeginSchedule = itemClass.BeginSchedule,
                 EndSchedule = itemClass.EndSchedule,
                 Course = itemClass.Course,
-                Users = selected
+                Users = selected,
+                Disciplines = disciplines
             };
 
             return View(list);

@@ -11,5 +11,7 @@ namespace SchoolManagement.Web.Data.Repositories
         List<UsersAndClassificationViewModel> GetClassificationsFromClass(int classId, int disciplineId);
 
         List<Classification> GetClassificationFromCourse(int courseId, int disciplineId);
+
+        List<Classification> GetClassificationForStudents(int courseId);
     }
 }

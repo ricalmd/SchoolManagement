@@ -7,5 +7,7 @@ namespace SchoolManagement.Web.Models
     public class ClassWithStudentsViewModel : Class
     {
         public List<User> Users { get; set; }
+
+        public List<Discipline> Disciplines { get; set; }
     }
 }
