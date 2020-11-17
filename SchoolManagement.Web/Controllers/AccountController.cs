@@ -102,6 +102,11 @@ namespace SchoolManagement.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeElement(ChangeElementViewModel model)
         {
+            model.EmailTeachers = _userHelper.GetComboUsers();
+            model.EmailStudents = _userHelper.GetComboStudents();
+            model.Class = _studentRepository.GetComboClasses();
+            model.Discipline = _courseRepository.GetComboDisciplines();
+
             if (this.ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByIdAsync(model.EmailTeacherId);
@@ -116,13 +121,21 @@ namespace SchoolManagement.Web.Controllers
                     if (user.Status == "Aluno")
                     {
                         var id = model.ClassId;
-                        await _registerHelper.AddStudentAsync(user, id);
+
+                        if (id != 0)
+                        {
+                            await _registerHelper.AddStudentAsync(user, id);
+                        }
                     }
 
                     if (user.Status == "Formador")
                     {
                         var idDis = model.DisciplineId;
-                        await _registerHelper.AddTeacherAsync(user, idDis);
+
+                        if (idDis != 0)
+                        {
+                            await _registerHelper.AddTeacherAsync(user, idDis);
+                        }
                     }
 
                     var response = await _userHelper.UpdateUserAsync(user);
@@ -299,6 +312,8 @@ namespace SchoolManagement.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
+            model.Class = _studentRepository.GetComboClasses();
+
             if (this.ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
@@ -336,7 +351,11 @@ namespace SchoolManagement.Web.Controllers
                     if (user.Status == "Aluno")
                     {
                         var id = model.ClassId;
-                        await _registerHelper.AddStudentAsync(user, id);
+
+                        if (id != 0)
+                        {
+                            await _registerHelper.AddStudentAsync(user, id);
+                        }
                     }
 
                     if (result != IdentityResult.Success)

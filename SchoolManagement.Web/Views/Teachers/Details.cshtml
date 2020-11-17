@@ -34,17 +34,17 @@
     <input type="hidden" asp-for="@clId" />
     <div class="form-group">
         @{int score = item.Score;}
-        <input asp-for="@score" class="form-control" />
+        <input asp-for="@score" class="form-control" min="0" max="20" />
         <span asp-validation-for="@score" class="text-danger"></span>
     </div>
     <div class="form-group">
         @{int jAbsence = item.JustifiedAbsence;}
-        <input asp-for="@jAbsence" class="form-control" />
+        <input asp-for="@jAbsence" class="form-control" min="0" />
         <span asp-validation-for="@jAbsence" class="text-danger"></span>
     </div>
     <div class="form-group">
         @{int uAbsence = item.UnjustifiedAbsence;}
-        <input asp-for="@uAbsence" class="form-control" />
+        <input asp-for="@uAbsence" class="form-control" min="0" />
         <span asp-validation-for="@uAbsence" class="text-danger"></span>
     </div>
 
