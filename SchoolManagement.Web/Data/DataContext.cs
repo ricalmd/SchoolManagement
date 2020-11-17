@@ -38,7 +38,7 @@ namespace SchoolManagement.Web.Data
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
             }
 
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);                                                                                                                                                                                                                                                                                      
         }
     }
 }

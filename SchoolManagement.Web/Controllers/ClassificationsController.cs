@@ -3,6 +3,8 @@ using System.Linq;
 using SchoolManagement.Web.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Web.Helpers;
+using SchoolManagement.Web.Models;
+using Rotativa.AspNetCore;
 
 namespace SchoolManagement.Web.Controllers
 {
@@ -55,6 +57,19 @@ namespace SchoolManagement.Web.Controllers
 
             ViewBag.Message = course;
             return View(item);
+        }
+
+        public IActionResult GeneratePDF(string userId, int classId)
+        {
+            if(userId == null)
+            {
+                return NotFound();
+            }
+            var cl = _classificationRepository.GetClassification(userId, classId).ToList();
+
+            var pdf = new ViewAsPdf(cl);
+
+            return pdf;
         }
     }
 }

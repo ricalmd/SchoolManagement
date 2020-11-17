@@ -32,7 +32,8 @@ namespace SchoolManagement.Web.Data.Repositories
                         User = u,
                         UnjustifiedAbsence = cl.UnjustifiedAbsence,
                         Discipline = d,
-                        StudentId = cl.StudentId
+                        StudentId = cl.StudentId,
+                        Class = c
                     }).ToList(); 
         }
 
