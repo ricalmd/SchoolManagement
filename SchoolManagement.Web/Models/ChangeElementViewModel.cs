@@ -16,7 +16,7 @@ namespace SchoolManagement.Web.Models
 
         public IEnumerable<SelectListItem> EmailStudents { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [Display(Name = "Tipo de Utilizador")]
         public string Status { get; set; }
 

@@ -1,0 +1,93 @@
+﻿@model SchoolManagement.Web.Models.CourseAndDisciplinesViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div style="background-color: white;">
+    <h2>Detalhes</h2>
+
+    <div>
+        <h4>Curso</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.QNQ)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.QNQ)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.QEQ)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.QEQ)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Reference)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Reference)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Profile)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Profile)
+            </dd>
+        </dl>
+    </div>
+    <h4>Disciplinas</h4>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    <h5>Designação</h5>
+                </td>
+                <td>
+                    <h5>Objetivos</h5>
+                </td>
+                <td>
+                    <h5>Carga Horária</h5>
+                </td>
+                <td>
+                    <h5>Créditos</h5>
+                </td>
+                <td>
+                    <h5>Conteúdos</h5>
+                </td>
+                <td>
+                    <h5>Código</h5>
+                </td>
+            </tr>
+            @for (var i = 0; i < Model.Disciplines.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Disciplines[i].Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Disciplines[i].Objectiv)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Disciplines[i].Workload)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Disciplines[i].Credit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Disciplines[i].Content)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Disciplines[i].Code)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

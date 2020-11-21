@@ -10,16 +10,16 @@ namespace SchoolManagement.Web.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [Display(Name = "Designação")]
         public string NameClass { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [Display(Name = "Início")]
         [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime BeginSchedule { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [Display(Name = "Fim")]
         [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndSchedule { get; set; }

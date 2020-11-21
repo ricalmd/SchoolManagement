@@ -3,7 +3,6 @@ using System.Linq;
 using SchoolManagement.Web.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Web.Helpers;
-using SchoolManagement.Web.Models;
 using Rotativa.AspNetCore;
 
 namespace SchoolManagement.Web.Controllers

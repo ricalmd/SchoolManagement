@@ -8,8 +8,8 @@ namespace SchoolManagement.Web.Models
 {
     public class RegisterNewUserViewModel : User
     {
-        [Required]
-        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [EmailAddress(ErrorMessage = "O email é inválido")]
         [Display(Name = "Email")]
         public string Username { get; set; }
 
@@ -18,7 +18,7 @@ namespace SchoolManagement.Web.Models
         [Display(Name = "Lista de turmas")]
         public IEnumerable<SelectListItem> Class { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [Display(Name = "Fotografia")]
         public IFormFile Photo { get; set; }
     }

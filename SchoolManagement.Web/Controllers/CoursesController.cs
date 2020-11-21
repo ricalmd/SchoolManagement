@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
@@ -223,6 +224,28 @@ namespace SchoolManagement.Web.Controllers
             }
 
             return this.RedirectToAction($"Details/{id}");
+        }
+
+        public async Task<IActionResult> GeneratePDFCourse(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var course = await _courseRepository.GetByIdAsync(id.Value);
+
+            var result = _disciplineRepository.GetDisciplines(id.Value);
+
+            var model = _courseRepository.CourseAndDisciplines(course, result);
+
+            if (course == null || result == null || model == null)
+            {
+                return NotFound();
+            }
+
+            var pdf = new ViewAsPdf(model);
+
+            return pdf;
         }
     }
 }
