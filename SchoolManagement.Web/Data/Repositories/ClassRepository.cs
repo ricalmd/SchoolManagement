@@ -40,7 +40,7 @@ namespace SchoolManagement.Web.Data.Repositories
                 (s, u) => new { students = s, users = u })
                 .Join(_context.Classes, s => s.users.ClassId, c => c.Id,
                 (c, s) => new { classes = c, students = s })
-                .Select(x => x.students).ToList();
+                .Select(x => x.students).Include(c => c.Course).ToList();
         }
 
         public IEnumerable<SelectListItem> GetComboCourses()

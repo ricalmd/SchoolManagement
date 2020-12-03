@@ -12,5 +12,7 @@ namespace SchoolManagement.Web.Models
 
         [Display(Name = "Disciplina")]
         public string DisciplineName { get; set; }
+
+        public string Email { get; set; }
     }
 }

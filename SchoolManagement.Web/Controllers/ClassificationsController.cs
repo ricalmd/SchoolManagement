@@ -4,9 +4,11 @@ using SchoolManagement.Web.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Web.Helpers;
 using Rotativa.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SchoolManagement.Web.Controllers
 {
+    [Authorize(Roles = "Aluno")]
     public class ClassificationsController : Controller
     {
         private readonly IClassificationRepository _classificationRepository;

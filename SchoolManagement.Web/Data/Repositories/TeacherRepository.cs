@@ -30,7 +30,8 @@ namespace SchoolManagement.Web.Data.Repositories
                     {
                         TeacherId = t.Id,
                         UserName = u.Name,
-                        DisciplineName = d.Name
+                        DisciplineName = d.Name,
+                        Email = u.Email
                     }).AsNoTracking().ToList();
         }
     }

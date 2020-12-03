@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 using SchoolManagement.Web.Data.Repositories;
 using SchoolManagement.Web.Helpers;
-using SchoolManagement.Web.Models;
 
 namespace SchoolManagement.Web.Controllers
 {
@@ -33,6 +30,7 @@ namespace SchoolManagement.Web.Controllers
             _userHelper = userHelper;
         }
 
+        [Authorize(Roles = "Formador")]
         public async Task<IActionResult> Index()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
@@ -40,6 +38,7 @@ namespace SchoolManagement.Web.Controllers
             return View(_classRepository.GetClassesFromTeacher(user.Id));
         }
 
+        [Authorize(Roles = "Formador")]
         public async Task<IActionResult> DisciplinesIndex(int? id)
         {
             if (id == null)
@@ -59,6 +58,7 @@ namespace SchoolManagement.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Formador")]
         public async Task<IActionResult> Details(int? id, int? classId)
         {
             if(id == null || classId == null)
@@ -82,6 +82,7 @@ namespace SchoolManagement.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Formador")]
         [HttpPost, ActionName("Details")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditStudent(
@@ -115,6 +116,7 @@ namespace SchoolManagement.Web.Controllers
             return Redirect($"{disciplineId}?classId={classId}");
         }
 
+        [Authorize(Roles = "Administrativo")]
         public IActionResult TeachersIndex()
         {
             return View(_teacherRepository.GetUsersFromTeachers());

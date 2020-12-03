@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -88,6 +89,7 @@ namespace SchoolManagement.Web.Controllers
             return this.View(model);
         }
 
+        [Authorize(Roles = "Administrativo")]
         public IActionResult ChangeElement()
         {
             var model = new ChangeElementViewModel();
@@ -413,6 +415,53 @@ namespace SchoolManagement.Web.Controllers
         public IActionResult NotAuthorized()
         {
             return View();
+        }
+
+        [Authorize(Roles = "Administrativo")]
+        public IActionResult UsersList()
+        {
+            var users = _userHelper.GetUsers();
+
+            var model = new List<UsersListViewModel>();
+
+            foreach(var item in users)
+            {
+                var items = new UsersListViewModel 
+                {
+                    Name = item.Name,
+                    Email = item.Email,
+                    Confirmed = item.EmailConfirmed,
+                    UserType = item.Status
+                };
+
+                model.Add(items);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UsersList(string email)
+        {
+            if(email == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByEmailAsync(email);
+
+            if (user != null)
+            {
+                user.EmailConfirmed = true;
+
+                await _userHelper.UpdateUserAsync(user);
+
+                _mailHelper.SendMail(email, "Situação resolvida", $"<h1>Resolução</h1>" +
+                    $"A sua conta foi confirmada. " +
+                    $"Para fazer o login, faça a recuperação da password.");
+            }
+
+            return RedirectToAction($"UsersList");
         }
     }
 }
