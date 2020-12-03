@@ -52,9 +52,18 @@ namespace SchoolManagement.Web.Helpers
 
         public async Task AddTeacherAsync(User user, int id)
         {
-            var tcr = _teacherRepository.GetTeacher(id, user.Id);
+            var tcrList = _teacherRepository.GetAll();
+            int count = 0;
 
-            if (tcr == null)
+            foreach(var item in tcrList)
+            {
+                if(item.DisciplineId == id)
+                {
+                    count++;
+                }
+            }
+
+            if (count == 0)
             {
                 var teacher = new Teacher
                 {

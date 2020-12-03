@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Web.Data.Entities;
 
 namespace SchoolManagement.Web.Data.Repositories
@@ -12,6 +13,11 @@ namespace SchoolManagement.Web.Data.Repositories
         public ClassRepository(DataContext context) : base(context)
         {
             _context = context;
+        }
+
+        public List<Class> GetClassesFromCourse(int idCourse)
+        {
+            return _context.Classes.Include(c => c.Course).Where(c => c.CourseId.Equals(idCourse)).ToList();
         }
 
         public List<Class> GetClassesFromTeacher(string id)

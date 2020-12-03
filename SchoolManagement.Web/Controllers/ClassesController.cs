@@ -180,9 +180,18 @@ namespace SchoolManagement.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var itemClass = await _classRepository.GetByIdAsync(id);
-            await _classRepository.DeleteAsync(itemClass);
-            return RedirectToAction(nameof(Index));
+            var students = _studentRepository.GetStudents(id);
+
+            if (students.Count() == 0)
+            {
+                var itemClass = await _classRepository.GetByIdAsync(id);
+                await _classRepository.DeleteAsync(itemClass);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("ErrorDeleteClass");
+            }
         }
 
         [HttpPost, ActionName("Details")]
@@ -202,6 +211,11 @@ namespace SchoolManagement.Web.Controllers
 
             await _studentRepository.DeleteStudentAsync(std);
             return this.RedirectToAction($"Details/{id}");
+        }
+
+        public IActionResult ErrorDeleteClass()
+        {
+            return View();
         }
     }
 }

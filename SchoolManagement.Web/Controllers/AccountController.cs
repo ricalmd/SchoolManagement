@@ -409,5 +409,10 @@ namespace SchoolManagement.Web.Controllers
             this.ViewBag.Message = "Utilizador não encontrado.";
             return View(model);
         }
+
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
     }
 }

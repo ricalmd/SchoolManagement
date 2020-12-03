@@ -18,19 +18,22 @@ namespace SchoolManagement.Web.Controllers
         private readonly IDisciplineRepository _disciplineRepository;
         private readonly IClassificationRepository _classificationRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IClassRepository _classRepository;
 
         public CoursesController(
             ICourseRepository courseRepository,
             ICourseWithDisciplineRepository courseWithDisciplinesRepository,
             IDisciplineRepository disciplineRepository,
             IClassificationRepository classificationRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IClassRepository classRepository)
         {
             _courseRepository = courseRepository;
             _courseWithDisciplineRepository = courseWithDisciplinesRepository;
             _disciplineRepository = disciplineRepository;
             _classificationRepository = classificationRepository;
             _userHelper = userHelper;
+            _classRepository = classRepository;
         }
 
         // GET: Courses
@@ -190,10 +193,19 @@ namespace SchoolManagement.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _courseRepository.GetByIdAsync(id);
+            var cwd = _courseWithDisciplineRepository.GetByCourseId(id);
+            var classItem = _classRepository.GetClassesFromCourse(id);
 
-            await _courseRepository.DeleteAsync(course);
-            return RedirectToAction(nameof(Index));
+            if (cwd.Count() == 0 && classItem.Count() == 0)
+            {
+                var course = await _courseRepository.GetByIdAsync(id);
+                await _courseRepository.DeleteAsync(course);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("ErrorDeleteCourse");
+            }
         }
 
         [Authorize(Roles = "Administrativo")]
@@ -224,6 +236,11 @@ namespace SchoolManagement.Web.Controllers
             }
 
             return this.RedirectToAction($"Details/{id}");
+        }
+
+        public IActionResult ErrorDeleteCourse()
+        {
+            return View();
         }
 
         public async Task<IActionResult> GeneratePDFCourse(int? id)
